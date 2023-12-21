@@ -1,0 +1,6 @@
+{
+    "vcf": "file.vcf.gz",
+    "bed": "file.bed",
+    "bench": "hg002|cmrg",
+    "version": "2.1"
+}

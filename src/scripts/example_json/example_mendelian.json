@@ -1,0 +1,15 @@
+{
+    "proband": "",
+    "father": "",
+    "mother": "",
+    "use_snf": "",
+    "snf_list": "",
+    "directory": "",
+    "output": "",
+    "reference": "",
+    "tandem_repeat": "",
+    "snf_current": "",
+    "snf_new": "",
+    "extra_param": "",
+    "bcftools_version": ""
+}

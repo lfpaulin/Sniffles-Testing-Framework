@@ -1,0 +1,50 @@
+{
+    "giab": {
+        "bam_file": "",
+        "directory": "",
+        "output": "",
+        "reference": "",
+        "tandem_repeat": "",
+        "snf_current": "",
+        "snf_new": "",
+        "extra_param": "",
+        "truvari": ""
+    },
+    "cmrg": {
+        "bam_file": "",
+        "directory": "",
+        "output": "",
+        "reference": "",
+        "tandem_repeat": "",
+        "snf_current": "",
+        "snf_new": "",
+        "extra_param": "",
+        "truvari": ""
+    },
+    "mendelian": {
+        "proband": "",
+        "father": "",
+        "mother": "",
+        "use_snf": "",
+        "snf_list": "",
+        "directory": "",
+        "output": "",
+        "reference": "",
+        "tandem_repeat": "",
+        "snf_current": "",
+        "snf_new": "",
+        "extra_param": "",
+        "bcftools_version": ""
+    },
+    "merge": {
+        "snf_list": "",
+        "directory": "",
+        "output": "",
+        "threads": "",
+        "memory": "",
+        "snf_current": "",
+        "snf_new": "",
+        "extra_param": "",
+        "skip_old": 0
+    }
+}
