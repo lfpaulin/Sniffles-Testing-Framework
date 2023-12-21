@@ -24,7 +24,7 @@ TANDEM=$7
 EXTRA_PARAM=$8
 NTASKS=8
 
-[[ -f ${OUTPUT}.tsv]]  && rm ${OUTPUT}.tsv
+[[ -f ${OUTPUT}.tsv ]]  && rm ${OUTPUT}.tsv
 touch ${OUTPUT}.tsv
 
 trio_names=()

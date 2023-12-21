@@ -52,7 +52,7 @@ class TrioBench(object):
         job.set_error(f'log_{self.id}_snf2_old_trio.err')
         job.set_chdir(f'{self.args.dir_out}')
         if bool(self.args.use_snf):
-            cmd = f'{self.src_path}/scripts/sniffles_mendelian_snf.sh  {self.args.snf2_old} '\
+            cmd = f'{self.src_path}/scripts/sniffles_mendelian.sh  {self.args.snf2_old} '\
                   f'{self.args.proband}  {self.args.father}  {self.args.mother}  {self.args.output}_old  ' \
                   f'{self.args.reference}  {self.args.tandem_rep}  "{self.args.snf2_param_string}" '
         else:
@@ -69,7 +69,7 @@ class TrioBench(object):
         job.set_error(f'log_{self.id}_snf2_new_trio.err')
         job.set_chdir(f'{self.args.dir_out}')
         if bool(self.args.use_snf):
-            cmd = f'{self.src_path}/scripts/sniffles_mendelian_snf.sh  {self.args.snf2_new} '\
+            cmd = f'{self.src_path}/scripts/sniffles_mendelian.sh  {self.args.snf2_new} '\
                   f'{self.args.proband}  {self.args.father}  {self.args.mother}  {self.args.output}_new  ' \
                   f'{self.args.reference}  {self.args.tandem_rep}  "{self.args.snf2_param_string}" '
         else:

@@ -37,4 +37,4 @@ trio_names_string="${M},${F},${P}"
     --threads ${NTASKS}
 
 # bcftools mendelian
-bcftoos +mendelian --trio ${trio_names_string}  --mode c  ${OUTPUT}.vcf.gz >  ${OUTPUT}.mendelian
+bcftools +mendelian --trio ${trio_names_string}  --mode c  ${OUTPUT}.vcf.gz >  ${OUTPUT}.mendelian
