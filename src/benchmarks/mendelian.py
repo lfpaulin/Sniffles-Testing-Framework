@@ -16,6 +16,7 @@ class TrioBenchParam(object):
         self.snf2_param = None
         self.snf2_param_string = None
         self.bcftools_version = None
+        self.skip_old = None
 
     def set_parameters_from_json(self, json_dict):
         self.proband = json_dict["proband"]
@@ -32,6 +33,7 @@ class TrioBenchParam(object):
         self.snf2_param = json_dict["extra_param"]
         self.extra_param_string()
         self.bcftools_version = json_dict["bcftools_version"]
+        self.skip_old = json_dict["skip_old"]
 
     def extra_param_string(self):
         if len(self.snf2_param) > 0:
@@ -86,12 +88,15 @@ class TrioBench(object):
         # job.set_output(f'log_{self.id}_snf2_trio_compare.out')
         # job.set_error(f'log_{self.id}_snf2_trio_compare.err')
         # job.set_chdir(f'{self.args.dir_out}')
-        # job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
+        # if self.args.skip_old:
+        #     job.set_dependencies(f'afterok:{new.job_id}')
+        # else:
+        #     job.set_dependencies(f'afterok:{old.job_id},{new.job_id}') 
         # cmd = f''
         # job.make(cmd)
         # job.submit()
 
     def bench(self):
-        sniffles_current = self.sniffles_current()
+        sniffles_current = self.sniffles_current() if not self.args.skip_old else None
         sniffles_new = self.sniffles_new()
         self.compare(sniffles_current, sniffles_new)

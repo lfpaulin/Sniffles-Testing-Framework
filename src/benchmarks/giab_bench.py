@@ -15,6 +15,7 @@ class GIABBenchParam(object):
         self.snf2_param_string = None
         self.truvari = None
         self.truvari_version = None
+        self.skip_old = None
 
     def set_parameters_from_json(self, json_dict):
         self.bam = json_dict["bam_file"]
@@ -28,6 +29,7 @@ class GIABBenchParam(object):
         self.extra_param_string()
         self.truvari = self.set_truvari(json_dict["truvari"])
         self.truvari_version = self.truvari["version"]
+        self.skip_old = json_dict["skip_old"]
 
     def extra_param_string(self):
         if len(self.snf2_param) > 0:
@@ -72,7 +74,10 @@ class GIABBench(object):
         job.set_output(f'log_{self.id}_snf2_call_bench.out')
         job.set_error(f'log_{self.id}_snf2_call_bench.err')
         job.set_chdir(f'{self.args.dir_out}')
-        job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
+        if self.args.skip_old:
+            job.set_dependencies(f'afterok:{new.job_id}')
+        else:
+            job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
         # truvari command
         cmd = f'{self.src_path}/scripts/truvari.sh  {self.args.output}_old.vcf.gz  {self.args.output}_old_bench  ' \
               f'{self.args.output}_new.vcf.gz  {self.args.output}_new_bench  {self.args.truvari["vcf"]}  ' \
@@ -81,6 +86,6 @@ class GIABBench(object):
         job.submit()
 
     def bench(self):
-        sniffles_current = self.sniffles_current()
+        sniffles_current = self.sniffles_current() if not self.args.skip_old else None
         sniffles_new = self.sniffles_new()
         self.compare(sniffles_current, sniffles_new)

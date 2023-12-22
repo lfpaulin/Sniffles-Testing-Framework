@@ -50,6 +50,7 @@ class MergeXLBench(object):
               f'  {self.args.reference}  {self.args.threads}  {self.args.snf2_param_string}'
         job.make(cmd)
         job.submit()
+        return job
 
     def sniffles_new(self):
         job = jobs_slurm.SubmitJobsSlurm()
@@ -61,11 +62,23 @@ class MergeXLBench(object):
               f'  {self.args.reference}  {self.args.threads}  {self.args.snf2_param_string}'
         job.make(cmd)
         job.submit()
+        return job
 
-    def compare(self):
+    def compare(self, old, new):
         pass  # TODO:
+        # job = jobs_slurm.SubmitJobsSlurm()
+        # job.set_output(f'log_{self.id}_snf2_merge_bench.out')
+        # job.set_error(f'log_{self.id}_snf2_merge_bench.err')
+        # job.set_chdir(f'{self.args.dir_out}')
+        # if self.args.skip_old:
+        #     job.set_dependencies(f'afterok:{new.job_id}')
+        # else:
+        #     job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
+        # cmd = f''
+        # job.make(cmd)
+        # job.submit()
 
     def bench(self):
-        self.sniffles_current() if not self.args.skip_old else None
-        self.sniffles_new()
-        self.compare()
+        sniffles_current = self.sniffles_current() if not self.args.skip_old else None
+        sniffles_new = self.sniffles_new()
+        self.compare(sniffles_current, sniffles_new)
