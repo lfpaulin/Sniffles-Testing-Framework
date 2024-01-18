@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=snf2mend
-#SBATCH --ntasks-per-node=8
+#SBATCH --ntasks=8
 #SBATCH --mem=16gb
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=medium

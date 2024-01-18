@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=truvari
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks=1
 #SBATCH --mem=8gb
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=medium

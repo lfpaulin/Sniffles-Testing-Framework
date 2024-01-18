@@ -42,46 +42,37 @@ def get_arguments():
 
     # ############################################################################################ #
     # Bench all
-    """
-        -j/--json   JSON input with all parameters
-    """
     bench_help = "Perform all benchmark tests"
     subparser_bench = subparsers.add_parser("bench", help=bench_help)
     subparser_bench.add_argument('-j', '--json', type=str, required=True, dest='json', default="", help='')
 
     # ############################################################################################ #
     # Single sample benchmark with GIAB HG002 v0.6 (GRCh37)
-    """
-        -j/--json   JSON input with all parameters
-    """
     giab_help = "Single sample benchmark with GIAB HG002 v0.6 (GRCh37)"
     subparser_giab = subparsers.add_parser("giab", help=giab_help)
     subparser_giab.add_argument('-j', '--json', type=str, required=True, dest='json', default="", help='')
 
     # ############################################################################################ #
     # Single sample benchmark with GIAB HG002 CMRG (GRCh38)
-    """
-        -j/--json   JSON input with all parameters
-    """
     cmrg_help = "Single sample benchmark with GIAB HG002 CMRG (GRCh38)"
     subparser_cmrg = subparsers.add_parser("cmrg", help=cmrg_help)
     subparser_cmrg.add_argument('-j', '--json', type=str, required=True, dest='json', default="", help='')
 
     # ############################################################################################ #
     # Trio/Mendelian (BCFtools required)
-    """
-        -j/--json       JSON input with all parameters
-    """
     mendelian_help = "Trio/Mendelian bench"
     subparser_mendelian = subparsers.add_parser("mendelian", help=mendelian_help)
     subparser_mendelian.add_argument('-j', '--json', type=str, required=True, dest='json', default="", help='')
 
     # ############################################################################################ #
+    # Merge benchmark
+    population_help = "Test merging procedure"
+    subparser_merge = subparsers.add_parser("merge", help=population_help)
+    subparser_merge.add_argument('-j', '--json', type=str, required=True, dest='json', default="", help='')
+
+    # ############################################################################################ #
     # Population merge with a large number of samples as input
-    """
-         -j/--json       JSON input with all parameters
-     """
-    population_help = " Population mergeg with a large number of samples as input"
+    population_help = " Population merge with a large number of samples as input"
     subparser_popmerge = subparsers.add_parser("pop_merge", help=population_help)
     subparser_popmerge.add_argument('-j', '--json', type=str, required=True, dest='json', default="", help='')
 

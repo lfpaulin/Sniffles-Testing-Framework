@@ -41,6 +41,7 @@ class GIABBenchParam(object):
     def set_truvari(json_file):
         return json.load(open(json_file, "r"))
 
+
 class GIABBench(object):
     def __init__(self, bench_args, bench_id, src_path):
         self.args = bench_args
