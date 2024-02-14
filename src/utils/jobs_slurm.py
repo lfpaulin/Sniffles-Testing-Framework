@@ -1,4 +1,5 @@
 import subprocess
+from logger import setup_log
 
 
 class SubmitJobsSlurm(object):
@@ -13,6 +14,7 @@ class SubmitJobsSlurm(object):
         self.job_id = None
         self.dependencies = ""
         self.job_starter = ""
+        self.logger = setup_log(__name__, True)
 
     def set_output(self, this_output):
         self.output = this_output
@@ -36,14 +38,14 @@ class SubmitJobsSlurm(object):
         # with job id in file
         self.job_starter = f'sbatch {self.dependencies} --output {self.output} --error {self.error} ' \
                            f'--chdir {self.chdir}  {self.params}  {script}'
-        print(f'[INFO] CMD: {self.job_starter}')
+        self.logger.info(f'CMD: {self.job_starter}')
 
     def submit(self):
         run_cmd = subprocess.run(self.job_starter, shell=True, capture_output=True, text=True)
         if run_cmd.stderr != "":
-            print(f'[ERROR] {run_cmd.stderr}', end ="")
+            self.logger.error(run_cmd.stderr)
         else:
-            print(f'[INFO ] {run_cmd.stdout}', end ="")
+            self.logger.info(run_cmd.stdout)
             self.set_job_id(self.get_job_id_from_stdout(job_stdout=run_cmd.stdout.rstrip("\n")))
 
     @staticmethod

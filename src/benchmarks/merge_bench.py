@@ -1,4 +1,5 @@
-from scripts import jobs_slurm
+from utils import jobs_slurm
+from utils.logger import setup_log
 
 class PopMergeTestParam(object):
     def __init__(self):
@@ -28,10 +29,10 @@ class PopMergeTestParam(object):
         self.skip_old = bool(json_dict["skip_old"])
 
     def extra_param_string(self):
-        if len(self.extra_param) > 0:
-            self.snf2_param_string = " ".join("  ".join(self.extra_param.split(",")).split(":"))
+        if len(self.snf2_param) > 0:
+            self.snf2_param_string = " ".join("  ".join(self.snf2_param.split(",")).split(":"))
         else:
-            self.snf2_param_string = self.extra_param 
+            self.snf2_param_string = self.snf2_param 
 
 
 class MergeXLBench(object):
@@ -39,7 +40,8 @@ class MergeXLBench(object):
         self.args = bench_args
         self.id = bench_id
         self.src_path = src_path
-    
+        self.logger = setup_log(__name__, True)
+
     def sniffles_current(self):
         job = jobs_slurm.SubmitJobsSlurm()
         job.set_output(f'log_{self.id}_snf2_old_mergeXL.out')
@@ -65,22 +67,29 @@ class MergeXLBench(object):
         return job
 
     def compare(self, old, new):
+        job = jobs_slurm.SubmitJobsSlurm()
+        job.set_output(f'log_{self.id}_snf2_merge_bench.out')
+        job.set_error(f'log_{self.id}_snf2_merge_bench.err')
+        job.set_chdir(f'{self.args.dir_out}')
+        if self.args.skip_old and self.args.skip_new:
+            self.logger.error(f'Both analysis have the "skip" option on... none has run.')
+        elif self.args.skip_old:
+            self.logger.info(f'Only running new version of Sniffles2.')
+            job.set_dependencies(f'afterok:{new.job_id}')
+        elif self.args.skip_old:
+            self.logger.info(f'Only running current version of Sniffles2.')
+            job.set_dependencies(f'afterok:{old.job_id}')
+        else:
+            self.logger.info(f'Running both versions of Sniffles2.')
+            job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
         pass  # TODO:
-        # job = jobs_slurm.SubmitJobsSlurm()
-        # job.set_output(f'log_{self.id}_snf2_merge_bench.out')
-        # job.set_error(f'log_{self.id}_snf2_merge_bench.err')
-        # job.set_chdir(f'{self.args.dir_out}')
-        # if self.args.skip_old:
-        #     job.set_dependencies(f'afterok:{new.job_id}')
-        # else:
-        #     job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
         # cmd = f''
         # job.make(cmd)
         # job.submit()
 
     def bench(self):
         sniffles_current = self.sniffles_current() if not self.args.skip_old else None
-        sniffles_new = self.sniffles_new()
+        sniffles_new = self.sniffles_new() if not self.args.skip_new else None
         self.compare(sniffles_current, sniffles_new)
 
 
@@ -112,10 +121,10 @@ class MergeTestParam(object):
         self.skip_old = bool(json_dict["skip_old"])
 
     def extra_param_string(self):
-        if len(self.extra_param) > 0:
-            self.snf2_param_string = " ".join("  ".join(self.extra_param.split(",")).split(":"))
+        if len(self.snf2_param) > 0:
+            self.snf2_param_string = " ".join("  ".join(self.snf2_param.split(",")).split(":"))
         else:
-            self.snf2_param_string = self.extra_param 
+            self.snf2_param_string = self.snf2_param 
 
 
 class MergeBench(object):
@@ -123,6 +132,7 @@ class MergeBench(object):
         self.args = bench_args
         self.id = bench_id
         self.src_path = src_path
+        self.logger = setup_log(__name__, True)
 
     def sniffles_current(self):
         job = jobs_slurm.SubmitJobsSlurm()
@@ -147,20 +157,27 @@ class MergeBench(object):
         return job
 
     def compare(self, old, new):
+        job = jobs_slurm.SubmitJobsSlurm()
+        job.set_output(f'log_{self.id}_snf2_merge_bench.out')
+        job.set_error(f'log_{self.id}_snf2_merge_bench.err')
+        job.set_chdir(f'{self.args.dir_out}')
+        if self.args.skip_old and self.args.skip_new:
+            self.logger.error(f'Both analysis have the "skip" option on... none has run.')
+        elif self.args.skip_old:
+            self.logger.info(f'Only running new version of Sniffles2.')
+            job.set_dependencies(f'afterok:{new.job_id}')
+        elif self.args.skip_old:
+            self.logger.info(f'Only running current version of Sniffles2.')
+            job.set_dependencies(f'afterok:{old.job_id}')
+        else:
+            self.logger.info(f'Running both versions of Sniffles2.')
+            job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
         pass  # TODO:
-        # job = jobs_slurm.SubmitJobsSlurm()
-        # job.set_output(f'log_{self.id}_snf2_merge_bench.out')
-        # job.set_error(f'log_{self.id}_snf2_merge_bench.err')
-        # job.set_chdir(f'{self.args.dir_out}')
-        # if self.args.skip_old:
-        #     job.set_dependencies(f'afterok:{new.job_id}')
-        # else:
-        #     job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
         # cmd = f''
         # job.make(cmd)
         # job.submit()
 
     def bench(self):
         sniffles_current = self.sniffles_current() if not self.args.skip_old else None
-        sniffles_new = self.sniffles_new()
+        sniffles_new = self.sniffles_new() if not self.args.skip_new else None
         self.compare(sniffles_current, sniffles_new)

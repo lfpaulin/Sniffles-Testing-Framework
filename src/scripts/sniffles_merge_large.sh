@@ -15,6 +15,10 @@ REFERENCE=$4
 NTASKS=$5
 EXTRA_PARAM=$6
 
+let MAX_FILES=$(wc -l ${SNF2_PATH} | cut -d " " -f 1)+100
+
+ulimit -n ${MAX_FILES}
+
 python ${SNF2_PATH} \
     --input "${INPUT_FILE_TSV}" \
     --vcf ${OUTPUT}.vcf.gz \

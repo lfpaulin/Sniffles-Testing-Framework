@@ -10,7 +10,7 @@ from benchmarks.giab_bench import GIABBenchParam
 from benchmarks.giab_bench import GIABBench
 from benchmarks.mendelian import TrioBenchParam
 from benchmarks.mendelian import TrioBench
-from scripts import generate_id
+from utils import generate_id
 
 
 FRAMEWORK_SRC_PATH = "/".join(__file__.split("/")[:-1])
@@ -131,8 +131,14 @@ def full_bench(user_args):
     # NOTE: Mosaic
     mosaic_params = GIABBenchParam()
     mosaic_params.set_parameters_from_json(params_json["mosaic"])
-    mosaicsv_bench = GIABBench(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
-    mosaicsv_bench.bench()
+    # TODO: finish BAM
+    """
+      we have the unique SVs for HG002 now we need the read names +
+      the coverage for HG00733 and the specific regions we are 
+      interested in
+    """
+    # mosaicsv_bench = GIABBench(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
+    # mosaicsv_bench.bench()
 
 
 def main():
