@@ -1,7 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=truvari
 #SBATCH --ntasks=1
-#SBATCH --mem=8gb
+#SBATCH --mem=8Gb
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=medium
 #SBATCH --account=proj-fs0002

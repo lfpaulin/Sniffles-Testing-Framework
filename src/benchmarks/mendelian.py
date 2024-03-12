@@ -14,10 +14,13 @@ class TrioBenchParam(object):
         self.tandem_rep = None
         self.snf2_old = None
         self.snf2_new = None
+        self.snf2_old_ver = None
+        self.snf2_new_ver = None
         self.snf2_param = None
         self.snf2_param_string = None
         self.bcftools_version = None
         self.skip_old = None
+        self.skip_new = None
 
     def set_parameters_from_json(self, json_dict):
         self.proband = json_dict["proband"]
@@ -31,10 +34,13 @@ class TrioBenchParam(object):
         self.tandem_rep = json_dict["tandem_repeat"]
         self.snf2_old = json_dict["snf_current"]
         self.snf2_new = json_dict["snf_new"]
+        self.snf2_old_ver = json_dict["snf_current_ver"]
+        self.snf2_new_ver = json_dict["snf_new_ver"]
         self.snf2_param = json_dict["extra_param"]
         self.extra_param_string()
         self.bcftools_version = json_dict["bcftools_version"]
-        self.skip_old = json_dict["skip_old"]
+        self.skip_old = bool(json_dict["skip_old"])
+        self.skip_new = bool(json_dict["skip_new"])
 
     def extra_param_string(self):
         if len(self.snf2_param) > 0:
@@ -52,36 +58,66 @@ class TrioBench(object):
     
     def sniffles_current(self):
         job = jobs_slurm.SubmitJobsSlurm()
-        job.set_output(f'log_{self.id}_snf2_old_trio.out')
-        job.set_error(f'log_{self.id}_snf2_old_trio.err')
+        job.set_output(f'log_{self.id}_snf2_trio_{self.args.snf2_old_ver}.out')
+        job.set_error(f'log_{self.id}_snf2_trio_{self.args.snf2_old_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
+        job.set_jname(f'mend{self.args.snf2_old_ver}')
         if bool(self.args.use_snf):
-            cmd = f'{self.src_path}/scripts/sniffles_mendelian.sh  {self.args.snf2_old} '\
-                  f'{self.args.proband}  {self.args.father}  {self.args.mother}  {self.args.output}_old  ' \
-                  f'{self.args.reference}  {self.args.tandem_rep}  "{self.args.snf2_param_string}" '
+            cmd = " ".join([
+                f'{self.src_path}/scripts/sniffles_mendelian_snf.sh',
+                self.args.snf2_old,
+                self.args.snf_list,
+                f'{self.args.output}_{self.args.snf2_old_ver}',
+                self.args.reference,
+                self.args.tandem_rep,
+                f'"{self.args.snf2_param_string}" '
+            ])
         else:
-            cmd = f'{self.src_path}/scripts/sniffles_mendelian_snf.sh  {self.args.snf2_old} '\
-                  f'{self.args.snf_list}  {self.args.output}_old  ' \
-                  f'{self.args.reference}  {self.args.tandem_rep}  "{self.args.snf2_param_string}" '
+            cmd = " ".join([
+               f'{self.src_path}/scripts/sniffles_mendelian.sh',
+               self.args.snf2_old,
+               self.args.proband, 
+               self.args.father,
+               self.args.mother,
+               f'{self.args.output}_{self.args.snf2_old_ver}',
+               self.args.reference,
+               self.args.tandem_rep,
+               f'"{self.args.snf2_param_string}"' 
+            ]) 
         job.make(cmd)
         job.submit()
         return job
 
     def sniffles_new(self):
         job = jobs_slurm.SubmitJobsSlurm()
-        job.set_output(f'log_{self.id}_snf2_new_trio.out')
-        job.set_error(f'log_{self.id}_snf2_new_trio.err')
+        job.set_output(f'log_{self.id}_snf2_trio_{self.args.snf2_new_ver}.out')
+        job.set_error(f'log_{self.id}_snf2_trio_{self.args.snf2_new_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
+        job.set_jname(f'mend{self.args.snf2_new_ver}')
         if bool(self.args.use_snf):
             self.logger.info(f'Using SNF files only for the merge')
-            cmd = f'{self.src_path}/scripts/sniffles_mendelian.sh  {self.args.snf2_new} '\
-                  f'{self.args.proband}  {self.args.father}  {self.args.mother}  {self.args.output}_new  ' \
-                  f'{self.args.reference}  {self.args.tandem_rep}  "{self.args.snf2_param_string}" '
+            cmd = " ".join([
+                f'{self.src_path}/scripts/sniffles_mendelian_snf.sh',
+                self.args.snf2_new,
+                self.args.snf_list,
+                f'{self.args.output}_{self.args.snf2_new_ver}',
+                self.args.reference,
+                self.args.tandem_rep,
+                f'"{self.args.snf2_param_string}"'
+            ])
         else:
-            self.logger.info(f'Calling variants and and merging SNF files only')
-            cmd = f'{self.src_path}/scripts/sniffles_mendelian_snf.sh  {self.args.snf2_new} '\
-                  f'{self.args.snf_list}  {self.args.output}_new  ' \
-                  f'{self.args.reference}  {self.args.tandem_rep}  "{self.args.snf2_param_string}" '
+            self.logger.info(f'Calling variants and merging SNF')
+            cmd = " ".join([
+                f'{self.src_path}/scripts/sniffles_mendelian.sh',
+                self.args.snf2_new,
+                self.args.proband,
+                self.args.father,
+                self.args.mother,
+                f'{self.args.output}_{self.args.snf2_new_ver}',
+                self.args.reference,
+                self.args.tandem_rep,
+                f'"{self.args.snf2_param_string}"'
+            ])
         job.make(cmd)
         job.submit()
         return job
@@ -109,6 +145,10 @@ class TrioBench(object):
         # job.submit()
 
     def bench(self):
-        sniffles_current = self.sniffles_current() if not self.args.skip_old else None
-        sniffles_new = self.sniffles_new() if not self.args.skip_new else None
-        self.compare(sniffles_current, sniffles_new)
+        sniffles_current = None
+        sniffles_new = None
+        if not self.args.skip_old:
+            sniffles_current = self.sniffles_current()
+        if not self.args.skip_new:
+            sniffles_new = self.sniffles_new()
+        # self.compare(sniffles_current, sniffles_new)

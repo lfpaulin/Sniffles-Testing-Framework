@@ -1,7 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=snf2merge
 #SBATCH --ntasks=8
-#SBATCH --mem=16gb
+#SBATCH --mem=16Gb
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=medium
 #SBATCH --account=proj-fs0002

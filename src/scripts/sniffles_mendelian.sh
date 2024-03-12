@@ -1,5 +1,4 @@
 #!/bin/bash
-#SBATCH --job-name=snf2mend
 #SBATCH --ntasks=8
 #SBATCH --mem=16gb
 #SBATCH --time=3-00:00:00

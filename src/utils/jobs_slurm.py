@@ -1,5 +1,5 @@
 import subprocess
-from logger import setup_log
+from utils.logger import setup_log
 
 
 class SubmitJobsSlurm(object):
@@ -9,6 +9,7 @@ class SubmitJobsSlurm(object):
         self.output = ""
         self.error = ""
         self.chdir = ""
+        self.jname = ""
         self.params = ""
         self.log_job_id = ""
         self.job_id = None
@@ -25,6 +26,9 @@ class SubmitJobsSlurm(object):
     def set_chdir(self, this_chdir):
         self.chdir = this_chdir
 
+    def set_jname(self, this_jname):
+        self.jname = this_jname
+
     def set_params(self, this_params):
         self.params = this_params
 
@@ -37,7 +41,7 @@ class SubmitJobsSlurm(object):
     def make(self, script):
         # with job id in file
         self.job_starter = f'sbatch {self.dependencies} --output {self.output} --error {self.error} ' \
-                           f'--chdir {self.chdir}  {self.params}  {script}'
+                           f'--job-name {self.jname} --chdir {self.chdir}  {self.params}  {script}'
         self.logger.info(f'CMD: {self.job_starter}')
 
     def submit(self):

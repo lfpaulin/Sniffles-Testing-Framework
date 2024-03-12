@@ -11,9 +11,12 @@ class PopMergeTestParam(object):
         self.memory = None
         self.snf2_old = None
         self.snf2_new = None
+        self.snf2_old_ver = None
+        self.snf2_new_ver = None
         self.snf2_param = None
         self.snf2_param_string = None
         self.skip_old = None
+        self.skip_new = None
 
     def set_parameters_from_json(self, json_dict):
         self.snf_list = json_dict["snf_list"]
@@ -24,9 +27,12 @@ class PopMergeTestParam(object):
         self.memory = json_dict["memory"]
         self.snf2_old = json_dict["snf_current"]
         self.snf2_new = json_dict["snf_new"]
+        self.snf2_old_ver = json_dict["snf_current_ver"]
+        self.snf2_new_ver = json_dict["snf_new_ver"]
         self.snf2_param = json_dict["extra_param"]
         self.extra_param_string()
         self.skip_old = bool(json_dict["skip_old"])
+        self.skip_new = bool(json_dict["skip_new"])
 
     def extra_param_string(self):
         if len(self.snf2_param) > 0:
@@ -88,9 +94,13 @@ class MergeXLBench(object):
         # job.submit()
 
     def bench(self):
-        sniffles_current = self.sniffles_current() if not self.args.skip_old else None
-        sniffles_new = self.sniffles_new() if not self.args.skip_new else None
-        self.compare(sniffles_current, sniffles_new)
+        sniffles_current = None
+        sniffles_new = None
+        if not self.args.skip_old:
+            sniffles_current = self.sniffles_current() 
+        if not self.args.skip_new:
+            sniffles_new = self.sniffles_new()
+        # self.compare(sniffles_current, sniffles_new)
 
 
 class MergeTestParam(object):
@@ -103,9 +113,12 @@ class MergeTestParam(object):
         self.tandem_rep = None
         self.snf2_old = None
         self.snf2_new = None
+        self.snf2_old_ver = None
+        self.snf2_new_ver = None
         self.snf2_param = None
         self.snf2_param_string = None
         self.skip_old = None
+        self.skip_new = None
 
     def set_parameters_from_json(self, json_dict):
         self.sample1 = json_dict["sample1"]
@@ -116,9 +129,12 @@ class MergeTestParam(object):
         self.tandem_rep = json_dict["tandem_repeat"]
         self.snf2_old = json_dict["snf_current"]
         self.snf2_new = json_dict["snf_new"]
+        self.snf2_old_ver = json_dict["snf_current_ver"]
+        self.snf2_new_ver = json_dict["snf_new_ver"]
         self.snf2_param = json_dict["extra_param"]
         self.extra_param_string()
         self.skip_old = bool(json_dict["skip_old"])
+        self.skip_new = bool(json_dict["skip_new"])
 
     def extra_param_string(self):
         if len(self.snf2_param) > 0:
@@ -136,11 +152,20 @@ class MergeBench(object):
 
     def sniffles_current(self):
         job = jobs_slurm.SubmitJobsSlurm()
-        job.set_output(f'log_{self.id}_snf2_old_merge.out')
-        job.set_error(f'log_{self.id}_snf2_old_merge.err')
+        job.set_output(f'log_{self.id}_snf2_merge_{self.args.snf2_old_ver}.out')
+        job.set_error(f'log_{self.id}_snf2_merge_{self.args.snf2_old_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
-        cmd = f'{self.src_path}/scripts/sniffles_merge.sh {self.args.snf2_old} {self.args.sample1} {self.args.sample2} ' \
-              f'{self.args.output}_old {self.args.reference}  {self.args.tandem_rep}  {self.args.snf2_param_string}'
+        job.set_jname(f'mrg{self.args.snf2_old_ver}')
+        cmd = " ".join([
+            f'{self.src_path}/scripts/sniffles_merge.sh',
+            self.args.snf2_old,
+            self.args.sample1,
+            self.args.sample2,
+            f'{self.args.output}_{self.args.snf2_old_ver}',
+            self.args.reference,
+            self.args.tandem_rep,
+            f'"{self.args.snf2_param_string}"'
+        ])
         job.make(cmd)
         job.submit()
         return job
@@ -150,8 +175,17 @@ class MergeBench(object):
         job.set_output(f'log_{self.id}_snf2_new_merge.out')
         job.set_error(f'log_{self.id}_snf2_new_merge.err')
         job.set_chdir(f'{self.args.dir_out}')
-        cmd = f'{self.src_path}/scripts/sniffles_merge.sh {self.args.snf2_new} {self.args.sample1} {self.args.sample2} ' \
-              f'{self.args.output}_new {self.args.reference}  {self.args.tandem_rep}  {self.args.snf2_param_string}'
+        job.set_jname(f'mrg{self.args.snf2_new_ver}')
+        cmd = " ".join([
+            f'{self.src_path}/scripts/sniffles_merge.sh',
+            self.args.snf2_old,
+            self.args.sample1,
+            self.args.sample2,
+            f'{self.args.output}_{self.args.snf2_new_ver}',
+            self.args.reference,
+            self.args.tandem_rep,
+            f'"{self.args.snf2_param_string}"'
+        ])
         job.make(cmd)
         job.submit()
         return job
@@ -178,6 +212,10 @@ class MergeBench(object):
         # job.submit()
 
     def bench(self):
-        sniffles_current = self.sniffles_current() if not self.args.skip_old else None
-        sniffles_new = self.sniffles_new() if not self.args.skip_new else None
-        self.compare(sniffles_current, sniffles_new)
+        sniffles_current = None
+        sniffles_new = None
+        if not self.args.skip_old:
+            sniffles_current = self.sniffles_current()
+        if not self.args.skip_new:
+            sniffles_new = self.sniffles_new()
+        # self.compare(sniffles_current, sniffles_new)

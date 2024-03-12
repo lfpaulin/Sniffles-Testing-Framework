@@ -2,6 +2,7 @@
 import sys 
 import json 
 import config
+import time
 from benchmarks.merge_bench import PopMergeTestParam
 from benchmarks.merge_bench import MergeTestParam
 from benchmarks.merge_bench import MergeXLBench
@@ -11,7 +12,9 @@ from benchmarks.giab_bench import GIABBench
 from benchmarks.mendelian import TrioBenchParam
 from benchmarks.mendelian import TrioBench
 from utils import generate_id
+from utils.logger import setup_log
 
+my_logger = setup_log(__name__, True)
 
 FRAMEWORK_SRC_PATH = "/".join(__file__.split("/")[:-1])
 
@@ -93,50 +96,58 @@ def full_bench(user_args):
     print(f'{FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     params_json = json.load(open(user_args.json, "r"))
-    # NOTE: GIAB ONT
+    # NOTE: GIAB ONT hg19
     giab_params = GIABBenchParam()
-    giab_params.set_parameters_from_json(params_json["giab"])
+    giab_params.set_parameters_from_json(params_json["giabsv_ont_hg19"])
     giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_bench.bench()
-    # NOTE: CMRG ONT
-    cmrg_params = GIABBenchParam()
-    cmrg_params.set_parameters_from_json(params_json["cmrg"])
-    cmrgsv_bench = GIABBench(cmrg_params, bench_id, FRAMEWORK_SRC_PATH)
-    cmrgsv_bench.bench()
-    # NOTE: GIAB HiFI
+    time.sleep(2)
+    # NOTE: GIAB HiFI hg19
     giab_hifi_params = GIABBenchParam()
-    giab_hifi_params.set_parameters_from_json(params_json["giab_hifi"])
+    giab_hifi_params.set_parameters_from_json(params_json["giab_hifi_hg19"])
     giabsv_hifi_bench = GIABBench(giab_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_hifi_bench.bench()
-    # NOTE: CMRG HiFi
-    cmrg_hifi_params = GIABBenchParam()
-    cmrg_hifi_params.set_parameters_from_json(params_json["cmrg_hifi"])
-    cmrgsv_hifi_bench = GIABBench(cmrg_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
-    cmrgsv_hifi_bench.bench()
+    time.sleep(2)
+    # NOTE: GIAB ONT hg38
+    giab_params = GIABBenchParam()
+    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38"])
+    giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
+    giabsv_bench.bench()
+    time.sleep(2)
+    # NOTE: GIAB HiFI hg38
+    giab_hifi_params = GIABBenchParam()
+    giab_hifi_params.set_parameters_from_json(params_json["hg002_hifi_hg38"])
+    giabsv_hifi_bench = GIABBench(giab_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
+    giabsv_hifi_bench.bench()
+    time.sleep(2)
     # NOTE: Mendelian
     trio_params = TrioBenchParam()
-    trio_params.set_parameters_from_json(params_json["mendelian"])
+    trio_params.set_parameters_from_json(params_json["mendelian_ont"])
     triosv_bench = TrioBench(trio_params, bench_id, FRAMEWORK_SRC_PATH)
     triosv_bench.bench()
+    time.sleep(2)
     # NOTE: Mendelian HiFi
     trio_hifi_params = TrioBenchParam()
     trio_hifi_params.set_parameters_from_json(params_json["mendelian_hifi"])
     triosv_hifi_bench = TrioBench(trio_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
     triosv_hifi_bench.bench()
+    time.sleep(2)
     # NOTE: Merge
     merge_params = MergeTestParam()
     merge_params.set_parameters_from_json(params_json["merge"])
     merge_bench = MergeBench(merge_params, bench_id, FRAMEWORK_SRC_PATH)
     merge_bench.bench()
+    time.sleep(2)
     # NOTE: Mosaic
-    mosaic_params = GIABBenchParam()
-    mosaic_params.set_parameters_from_json(params_json["mosaic"])
+    my_logger.warning("mosaic missing")
     # TODO: finish BAM
     """
       we have the unique SVs for HG002 now we need the read names +
       the coverage for HG00733 and the specific regions we are 
       interested in
     """
+    # mosaic_params = GIABBenchParam()
+    # mosaic_params.set_parameters_from_json(params_json["mosaic"])
     # mosaicsv_bench = GIABBench(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
     # mosaicsv_bench.bench()
 

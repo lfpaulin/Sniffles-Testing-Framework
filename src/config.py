@@ -2,7 +2,7 @@ import argparse
 
 
 # Version
-version = 'v0.2.231220'
+version = 'v0.2.240310'
 
 
 # Arguments

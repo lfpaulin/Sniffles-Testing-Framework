@@ -161,3 +161,5 @@ cython_debug/
 # luis
 resultadoRsync.txt
 deploy_cluster.sh
+json_bcm
+snf2_bench.json
