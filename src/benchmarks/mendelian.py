@@ -26,7 +26,7 @@ class TrioBenchParam(object):
         self.proband = json_dict["proband"]
         self.father = json_dict["father"]
         self.mother = json_dict["mother"]
-        self.use_snf = json_dict["use_snf"]
+        self.use_snf = bool(json_dict["use_snf"])
         self.snf_list = json_dict["snf_list"]
         self.dir_out = json_dict["directory"]
         self.output = json_dict["output"]
@@ -62,7 +62,8 @@ class TrioBench(object):
         job.set_error(f'log_{self.id}_snf2_trio_{self.args.snf2_old_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
         job.set_jname(f'mend{self.args.snf2_old_ver}')
-        if bool(self.args.use_snf):
+        if self.args.use_snf:
+            self.logger.debug(f'using SNF')
             cmd = " ".join([
                 f'{self.src_path}/scripts/sniffles_mendelian_snf.sh',
                 self.args.snf2_old,
@@ -73,6 +74,7 @@ class TrioBench(object):
                 f'"{self.args.snf2_param_string}" '
             ])
         else:
+            self.logger.debug(f'using BAM')
             cmd = " ".join([
                f'{self.src_path}/scripts/sniffles_mendelian.sh',
                self.args.snf2_old,
@@ -94,8 +96,8 @@ class TrioBench(object):
         job.set_error(f'log_{self.id}_snf2_trio_{self.args.snf2_new_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
         job.set_jname(f'mend{self.args.snf2_new_ver}')
-        if bool(self.args.use_snf):
-            self.logger.info(f'Using SNF files only for the merge')
+        if self.args.use_snf:
+            self.logger.info(f'Using SNF')
             cmd = " ".join([
                 f'{self.src_path}/scripts/sniffles_mendelian_snf.sh',
                 self.args.snf2_new,
@@ -106,7 +108,7 @@ class TrioBench(object):
                 f'"{self.args.snf2_param_string}"'
             ])
         else:
-            self.logger.info(f'Calling variants and merging SNF')
+            self.logger.info(f'using BAM')
             cmd = " ".join([
                 f'{self.src_path}/scripts/sniffles_mendelian.sh',
                 self.args.snf2_new,

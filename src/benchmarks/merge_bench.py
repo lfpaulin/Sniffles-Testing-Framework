@@ -172,8 +172,8 @@ class MergeBench(object):
 
     def sniffles_new(self):
         job = jobs_slurm.SubmitJobsSlurm()
-        job.set_output(f'log_{self.id}_snf2_new_merge.out')
-        job.set_error(f'log_{self.id}_snf2_new_merge.err')
+        job.set_output(f'log_{self.id}_snf2_merge_{self.args.snf2_new_ver}.out')
+        job.set_error(f'log_{self.id}_snf2_merge_{self.args.snf2_new_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
         job.set_jname(f'mrg{self.args.snf2_new_ver}')
         cmd = " ".join([

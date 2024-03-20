@@ -30,8 +30,7 @@ truvari bench \
     --passonly \
     --includebed ${INCLUDE_BED} \
     --refdist 2000 \
-    --reference ${REFERENCE} \
-    --giabreport
+    --reference ${REFERENCE}
 
 truvari bench \
     --base ${THUTHSET_VCF} \
@@ -40,5 +39,4 @@ truvari bench \
     --passonly \
     --includebed ${INCLUDE_BED} \
     --refdist 2000 \
-    --reference ${REFERENCE} \
-    --giabreport
+    --reference ${REFERENCE}
