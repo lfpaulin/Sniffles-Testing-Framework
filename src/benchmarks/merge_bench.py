@@ -178,7 +178,7 @@ class MergeBench(object):
         job.set_jname(f'mrg{self.args.snf2_new_ver}')
         cmd = " ".join([
             f'{self.src_path}/scripts/sniffles_merge.sh',
-            self.args.snf2_old,
+            self.args.snf2_new,
             self.args.sample1,
             self.args.sample2,
             f'{self.args.output}_{self.args.snf2_new_ver}',

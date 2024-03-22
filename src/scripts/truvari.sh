@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --ntasks=1
-#SBATCH --mem=8Gb
+#SBATCH --mem=4Gb
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=medium
 #SBATCH --account=proj-fs0002
@@ -29,14 +29,17 @@ truvari bench \
     --output ${OUTPUT_OLD}_${BENCH} \
     --passonly \
     --includebed ${INCLUDE_BED} \
-    --refdist 2000 \
+    --refdist 1000 \
     --reference ${REFERENCE}
 
-truvari bench \
-    --base ${THUTHSET_VCF} \
-    --comp ${INVCF_NEW} \
-    --output ${OUTPUT_NEW}_${BENCH} \
-    --passonly \
-    --includebed ${INCLUDE_BED} \
-    --refdist 2000 \
-    --reference ${REFERENCE}
+if [[ "${INVCF_NEW}" != "none" ]]
+then
+    truvari bench \
+        --base ${THUTHSET_VCF} \
+        --comp ${INVCF_NEW} \
+        --output ${OUTPUT_NEW}_${BENCH} \
+        --passonly \
+        --includebed ${INCLUDE_BED} \
+        --refdist 1000 \
+        --reference ${REFERENCE}
+fi
