@@ -14,7 +14,7 @@ class GIABBenchParam(object):
         self.snf2_new = None
         self.snf2_old_ver = None
         self.snf2_new_ver = None
-        self.snf2_param = None
+        self.snf2_param = ""
         self.snf2_param_string = None
         self.truvari = None
         self.truvari_version = None
@@ -98,7 +98,7 @@ class GIABBench(object):
         job.submit()
         return job
 
-    def compare(self, old=None, new=None, bench_name=""):
+    def compare(self, old, new, bench_name=""):
         self.logger.info(f'Sniffles2 bench compare: {bench_name}')
         job = jobs_slurm.SubmitJobsSlurm()
         job.set_output(f'log_{self.id}_snf2_bench_giab.out')

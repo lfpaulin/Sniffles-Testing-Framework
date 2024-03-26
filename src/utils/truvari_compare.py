@@ -29,13 +29,17 @@ def get_arguments():
 info_needed = ("TP-base", "FP", "FN", "precision", "recall", "f1", "gt_concordance")
 
 def main():
-    params, help_menu = get_arguments()
-    snf2_old = open(params.json_prev)
-    snf2_new = open(params.json_new)
+    params, _ = get_arguments()
+    compare(params.json_prev, params.json_new)
+
+
+def compare(snf_truvari_old, snf_truvari_new):
+    snf2_old = open(snf_truvari_old)
+    snf2_new = open(snf_truvari_new)
     snf2_old_dict = json.load(snf2_old)
     snf2_new_dict = json.load(snf2_new)
     for info in info_needed:
-        print(f'{info}\t{snf2_old_dict[info]}\t{snf2_new_dict[info]}\t'\
+        print(f'{info}\t{snf2_old_dict[info]}\t{snf2_new_dict[info]}\t' + \
               f'{snf2_new_dict[info]-snf2_old_dict[info]}')
 
 

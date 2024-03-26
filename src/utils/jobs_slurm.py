@@ -40,7 +40,7 @@ class SubmitJobsSlurm(object):
 
     def make(self, script):
         # with job id in file
-        self.job_starter = f'sbatch {self.dependencies} --output {self.output} --error {self.error} ' \
+        self.job_starter = f'sbatch {self.dependencies} --output {self.output} --error {self.error} ' + \
                            f'--job-name {self.jname} --chdir {self.chdir}  {self.params}  {script}'
         self.logger.info(f'CMD: {self.job_starter}')
 
