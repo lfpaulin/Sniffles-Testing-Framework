@@ -26,7 +26,8 @@ def get_arguments():
     return args, main_help
 
 
-info_needed = ("TP-base", "FP", "FN", "precision", "recall", "f1", "gt_concordance")
+info_needed_int = ("TP-comp", "FP", "FN")
+info_needed_float = ("precision", "recall", "f1", "gt_concordance")
 
 def main():
     params, _ = get_arguments()
@@ -38,9 +39,12 @@ def compare(snf_truvari_old, snf_truvari_new):
     snf2_new = open(snf_truvari_new)
     snf2_old_dict = json.load(snf2_old)
     snf2_new_dict = json.load(snf2_new)
-    for info in info_needed:
+    for info in info_needed_int:
         print(f'{info}\t{snf2_old_dict[info]}\t{snf2_new_dict[info]}\t' + \
-              f'{snf2_new_dict[info]-snf2_old_dict[info]}')
+              f'{(snf2_new_dict[info]-snf2_old_dict[info])}')
+    for info in info_needed_float:
+        print(f'{info}\t{snf2_old_dict[info]:.4f}\t{snf2_new_dict[info]:.4f}\t' + \
+              f'{(snf2_new_dict[info]-snf2_old_dict[info]):.4f}')
 
 
 if __name__ == "__main__":

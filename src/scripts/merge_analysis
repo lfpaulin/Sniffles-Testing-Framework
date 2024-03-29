@@ -1,0 +1,79 @@
+#!/bin/bash
+
+truvari_compare="/home/lpaz/Documents/baylor/tools/Sniffles-Testing-Framework/src/utils/truvari_compare.py"
+REFERENCE="/mnt/ssd_ubuntu/reference_genomes/grch38/genome/grch38.fasta.gz"
+snf_versions=("v22" "v23")
+
+function stats () {
+    perl -e '$t=0; $s=0; @v=(); $min=1e6; $max=0; 
+        while(<>){
+            chomp($_); 
+            $t+=$_; 
+            $l++;
+            push @v, $_;
+            if ($min > $_) {
+                $min = $_;
+            }
+            if ($max < $_){
+                $max = $_;
+            }
+        }; 
+        @vals = sort {$a <=> $b} @v;
+        $len = @vals;
+        if($len%2) {
+            $med = $vals[int($len/2)];
+        } else {
+            $med = ($vals[int($len/2)-1] + $vals[int($len/2)])/2;
+        }
+        printf "%0.3f\t%0.3f\t%d\t%d\t\n", $t/$l, $med, $min, $max;'
+}
+
+[[ ! -d "results" ]] && mkdir results
+samples_merged=("hg00171:10" "hg00864:01")
+
+for sampleInfo in ${samples_merged[@]};
+do
+    sample_name=$(echo ${sampleInfo} | cut -d ":" -f 1)
+    supp_vec=$(echo ${sampleInfo} | cut -d ":" -f 2)
+    truvari_output=()
+    printf "${sample_name}\tSV\tPOP\tMEAN\tMEDIAN\tMIN\tMAX\n"
+    for ver in ${snf_versions[@]};
+    do
+        # fix GT and SUPP_VEC
+        nutty pop --vcf merge_${ver}.vcf.gz --fix-gt --fix-suppvec --output-vcf | bgzip -c > results/merge_${ver}_fixed.vcf.gz;
+        # separate the merged to compare each sample 
+        bcftools view \
+            --include "SUPP_VEC = '${supp_vec}' || SUPP_VEC = '11'" \
+            --samples ${sample_name} results/merge_${ver}_fixed.vcf.gz | \
+        bcftools sort --output results/in_${ver}_${sample_name}.vcf.gz --output-type z -  > /dev/null 2>&1
+        bcftools index --tbi results/in_${ver}_${sample_name}.vcf.gz
+        # SV counts in single sample VCF
+        svcount=$(zgrep -vc "#" merge_${ver}_${sample_name}.vcf.gz)
+        # SV counts in population VCF
+        popcount=$(zgrep -vc "#" results/in_${ver}_${sample_name}.vcf.gz)
+        # out
+        printf "${ver}\t%s\t%s\t" ${svcount} ${popcount}
+        # get stasts of combined SV in merge
+        nutty pop --vcf results/in_${ver}_${sample_name}.vcf.gz | grep -v "#" | sed -e "s/,/\t/g" | \
+            cut -f 12 > results/sv_combined_in_merge_${ver}_${sample_name}.txt
+        cat results/sv_combined_in_merge_${ver}_${sample_name}.txt | stats
+        # Truvari prep
+        # SV counts in single sample VCF
+        bcftools sort --output results/tmp.gz --output-type z merge_${ver}_${sample_name}.vcf.gz > /dev/null 2>&1
+        mv results/tmp.gz merge_${ver}_${sample_name}.vcf.gz
+        bcftools index --tbi merge_${ver}_${sample_name}.vcf.gz
+        [[ -d "results/truvari_${ver}_${sample_name}" ]] && rm -r results/truvari_${ver}_${sample_name}
+        truvari bench \
+            --base merge_${ver}_${sample_name}.vcf.gz \
+            --comp results/in_${ver}_${sample_name}.vcf.gz \
+            --output results/truvari_${ver}_${sample_name} \
+            --passonly \
+            --refdist 1000 \
+            --reference ${REFERENCE} > /dev/null 2>&1
+        truvari_output+=("results/truvari_${ver}_${sample_name}/summary.json")
+    done
+    printf "\tSniffles%s\tSniffles%s\tDIFF\n" ${snf_versions[0]} ${snf_versions[1]}
+    python ${truvari_compare} --prev ${truvari_output[0]} --new ${truvari_output[1]}
+    echo ""
+done
+
