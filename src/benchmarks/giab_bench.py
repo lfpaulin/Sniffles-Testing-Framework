@@ -170,4 +170,5 @@ class GIABBench(object):
             sniffles_current = self.sniffles_current()
         if not self.args.skip_new:
             sniffles_new = self.sniffles_new()
-        self.compare(sniffles_current, sniffles_new)
+        if sniffles_new is not None or sniffles_new is not None:
+            self.compare(sniffles_current, sniffles_new)

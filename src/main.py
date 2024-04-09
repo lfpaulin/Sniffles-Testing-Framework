@@ -11,6 +11,8 @@ from benchmarks.giab_bench import GIABBenchParam
 from benchmarks.giab_bench import GIABBench
 from benchmarks.mendelian import TrioBenchParam
 from benchmarks.mendelian import TrioBench
+from benchmarks.genotyper import GenotyperParam
+from benchmarks.genotyper import GenotyperBench
 from utils import generate_id
 from utils.logger import setup_log
 
@@ -137,6 +139,12 @@ def full_bench(user_args):
     merge_params.set_parameters_from_json(params_json["merge"])
     merge_bench = MergeBench(merge_params, bench_id, FRAMEWORK_SRC_PATH)
     merge_bench.bench()
+    time.sleep(2)
+    # NOTE: Genotyper
+    genotyper_params = GenotyperParam()
+    genotyper_params.set_parameters_from_json(params_json["genotyper"])
+    genotyper_bench = GenotyperBench(genotyper_params, bench_id, FRAMEWORK_SRC_PATH)
+    genotyper_bench.bench()
     time.sleep(2)
     # NOTE: Mosaic
     my_logger.warning("mosaic missing")
