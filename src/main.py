@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys 
 import json 
+from benchmarks.snf_threads import SNFThreads, SNFThreadsParams
 import config
 import time
 from benchmarks.merge_bench import PopMergeTestParam
@@ -13,6 +14,7 @@ from benchmarks.mendelian import TrioBenchParam
 from benchmarks.mendelian import TrioBench
 from benchmarks.genotyper import GenotyperParam
 from benchmarks.genotyper import GenotyperBench
+from benchmarks.snf_threads import SNFThreads
 from utils import generate_id
 from utils.logger import setup_log
 
@@ -23,7 +25,7 @@ FRAMEWORK_SRC_PATH = "/".join(__file__.split("/")[:-1])
 
 # ONT or HiFi
 def giab_bench(user_args):
-    print(f'{FRAMEWORK_SRC_PATH}')
+    my_logger.info(f'{FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     giab_params = GIABBenchParam()
     params_json = json.load(open(user_args.json, "r"))
@@ -35,7 +37,7 @@ def giab_bench(user_args):
 
 # ONT or HiFi
 def cmrg_bench(user_args):
-    print(f'{FRAMEWORK_SRC_PATH}')
+    my_logger.info(f'{FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     cmrg_params = GIABBenchParam()
     params_json = json.load(open(user_args.json, "r"))
@@ -47,7 +49,7 @@ def cmrg_bench(user_args):
 
 # ONT or HiFi
 def trio_bench(user_args):
-    print(f'{FRAMEWORK_SRC_PATH}')
+    my_logger.info(f'{FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     trio_params = TrioBenchParam()
     params_json = json.load(open(user_args.json, "r"))
@@ -59,7 +61,7 @@ def trio_bench(user_args):
 
 # ONT (truvari)
 def combine_bench(user_args):
-    print(f'{FRAMEWORK_SRC_PATH}')
+    my_logger.info(f'{FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     merge_params = MergeTestParam()
     params_json = json.load(open(user_args.json, "r"))
@@ -71,7 +73,7 @@ def combine_bench(user_args):
 
 # ONT (Mike)
 def population_bench(user_args):
-    print(f'{FRAMEWORK_SRC_PATH}')
+    my_logger.info(f'{FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     pop_merge_params = PopMergeTestParam()
     params_json = json.load(open(user_args.json, "r"))
@@ -83,7 +85,7 @@ def population_bench(user_args):
 
 # ONT
 def mosaic_bench(user_args):
-    print(f'{FRAMEWORK_SRC_PATH}')
+    my_logger.info(f'{FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     mosaic_params = GIABBenchParam()
     params_json = json.load(open(user_args.json, "r"))
@@ -95,7 +97,7 @@ def mosaic_bench(user_args):
 
 # ONT and HiFi
 def full_bench(user_args):
-    print(f'{FRAMEWORK_SRC_PATH}')
+    my_logger.info(f'Framework path: {FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     params_json = json.load(open(user_args.json, "r"))
     # NOTE: GIAB ONT hg19
@@ -146,6 +148,12 @@ def full_bench(user_args):
     genotyper_bench = GenotyperBench(genotyper_params, bench_id, FRAMEWORK_SRC_PATH)
     genotyper_bench.bench()
     time.sleep(2)
+    # NOTE: Threads
+    snf_threads_params = SNFThreadsParams()
+    snf_threads_params.set_parameters_from_json(params_json["giab_hifi_hg19_threads"])
+    snf_threads_bench = SNFThreads(snf_threads_params, bench_id, FRAMEWORK_SRC_PATH)
+    snf_threads_bench.bench()
+    time.sleep(2)
     # NOTE: Mosaic
     my_logger.warning("mosaic missing")
     # TODO: finish BAM
@@ -180,7 +188,7 @@ def main():
     elif command == "bench":
         full_bench(user_args)
     else:
-        print(main_help)
+        my_logger.info(main_help)
         sys.exit(1)
 
 if __name__ == "__main__": 

@@ -1,3 +1,4 @@
+import os
 from utils import jobs_slurm
 from utils.logger import setup_log
 
@@ -53,6 +54,8 @@ class MergeXLBench(object):
         job.set_output(f'log_{self.id}_snf2_old_mergeXL.out')
         job.set_error(f'log_{self.id}_snf2_old_mergeXL.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_params(f'--ntasks={self.args.threads}  --mem={self.args.memory}')
         cmd = f'{self.src_path}/scripts/sniffles_merge_large.sh  {self.args.snf2_old}  {self.args.snf_list}  {self.args.output}_old ' \
               f'  {self.args.reference}  {self.args.threads}  {self.args.snf2_param_string}'
@@ -65,6 +68,8 @@ class MergeXLBench(object):
         job.set_output(f'log_{self.id}_snf2_new_mergeXL.out')
         job.set_error(f'log_{self.id}_snf2_new_mergeXL.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_params(f'--ntasks={self.args.threads}  --mem={self.args.memory}')
         cmd = f'{self.src_path}/scripts/sniffles_merge_large.sh  {self.args.snf2_new}  {self.args.snf_list}  {self.args.output}_new ' \
               f'  {self.args.reference}  {self.args.threads}  {self.args.snf2_param_string}'
@@ -77,6 +82,8 @@ class MergeXLBench(object):
         job.set_output(f'log_{self.id}_snf2_merge_bench.out')
         job.set_error(f'log_{self.id}_snf2_merge_bench.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         if self.args.skip_old and self.args.skip_new:
             self.logger.error(f'Both analysis have the "skip" option on... none has run.')
         elif self.args.skip_old:
@@ -155,6 +162,8 @@ class MergeBench(object):
         job.set_output(f'log_{self.id}_snf2_merge_{self.args.snf2_old_ver}.out')
         job.set_error(f'log_{self.id}_snf2_merge_{self.args.snf2_old_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'mrg{self.args.snf2_old_ver}')
         cmd = " ".join([
             f'{self.src_path}/scripts/sniffles_merge.sh',
@@ -175,6 +184,8 @@ class MergeBench(object):
         job.set_output(f'log_{self.id}_snf2_merge_{self.args.snf2_new_ver}.out')
         job.set_error(f'log_{self.id}_snf2_merge_{self.args.snf2_new_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'mrg{self.args.snf2_new_ver}')
         cmd = " ".join([
             f'{self.src_path}/scripts/sniffles_merge.sh',
@@ -195,6 +206,8 @@ class MergeBench(object):
         job.set_output(f'log_{self.id}_snf2_merge_bench.out')
         job.set_error(f'log_{self.id}_snf2_merge_bench.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         if self.args.skip_old and self.args.skip_new:
             self.logger.error(f'Both analysis have the "skip" option on... none has run.')
         elif self.args.skip_old:

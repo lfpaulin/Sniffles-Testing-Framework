@@ -1,3 +1,4 @@
+import os
 import json
 from utils import jobs_slurm
 from utils.logger import setup_log
@@ -64,6 +65,8 @@ class GIABBench(object):
         job.set_output(f'log_{self.id}_snf2_call_{self.args.snf2_old_ver}.out')
         job.set_error(f'log_{self.id}_snf2_call_{self.args.snf2_old_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'call{self.args.snf2_old_ver}')
         cmd = " ".join([
             f'{self.src_path}/scripts/sniffles.sh',
@@ -84,6 +87,8 @@ class GIABBench(object):
         job.set_output(f'log_{self.id}_snf2_call_{self.args.snf2_new_ver}.out')
         job.set_error(f'log_{self.id}_snf2_call_{self.args.snf2_new_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'call{self.args.snf2_new_ver}')
         cmd = " ".join([
             f'{self.src_path}/scripts/sniffles.sh',
@@ -104,6 +109,8 @@ class GIABBench(object):
         job.set_output(f'log_{self.id}_snf2_bench_giab.out')
         job.set_error(f'log_{self.id}_snf2_bench_giab.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'trvGIAB')
         if self.args.skip_old and self.args.skip_new:
             self.logger.error(f'Both analysis have the "skip" option on... none has run.')

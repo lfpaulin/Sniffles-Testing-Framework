@@ -1,3 +1,4 @@
+import os
 from utils import jobs_slurm
 from utils.logger import setup_log
 
@@ -61,6 +62,8 @@ class TrioBench(object):
         job.set_output(f'log_{self.id}_snf2_trio_{self.args.snf2_old_ver}.out')
         job.set_error(f'log_{self.id}_snf2_trio_{self.args.snf2_old_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'mend{self.args.snf2_old_ver}')
         if self.args.use_snf:
             self.logger.debug(f'using SNF')
@@ -95,6 +98,8 @@ class TrioBench(object):
         job.set_output(f'log_{self.id}_snf2_trio_{self.args.snf2_new_ver}.out')
         job.set_error(f'log_{self.id}_snf2_trio_{self.args.snf2_new_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'mend{self.args.snf2_new_ver}')
         if self.args.use_snf:
             self.logger.info(f'Using SNF')
@@ -129,6 +134,8 @@ class TrioBench(object):
         job.set_output(f'log_{self.id}_snf2_trio_compare.out')
         job.set_error(f'log_{self.id}_snf2_trio_compare.err')
         job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
         if self.args.skip_old and self.args.skip_new:
             self.logger.error(f'Both analysis have the "skip" option on... none has run.')
         elif self.args.skip_old:
