@@ -5,8 +5,8 @@
 #SBATCH --partition=medium
 #SBATCH --account=proj-fs0002
 
-. /stornext/snfs4/next-gen/scratch/luis/hermann/conda3/etc/profile.d/conda.sh
-conda activate sniffles
+. /stornext/snfs130/fritz/luis/miniconda3_py310_24_3/etc/profile.d/conda.sh
+conda activate truvari
 
 # from args
 INVCF_OLD=$1
