@@ -4,16 +4,15 @@
 #SBATCH --partition=long
 #SBATCH --account=proj-fs0002
 
-. /stornext/snfs4/next-gen/scratch/luis/hermann/conda3/etc/profile.d/conda.sh
-conda activate sniffles
+. /stornext/snfs130/fritz/luis/miniconda3_py310_24_3/etc/profile.d/conda.sh
+conda activate snf2dev
 
 
-SNF2_PATH=$1
-INPUT_FILE_TSV=$2
-OUTPUT=$3
-REFERENCE=$4
-NTASKS=$5
-EXTRA_PARAM=$6
+SNF2_PATH="/stornext/snfs4/next-gen/scratch/luis/hermann/bin/Sniffles_dev/src/sniffles2"
+INPUT_FILE_TSV=$1
+OUTPUT=$2
+REFERENCE="/stornext/snfs4/next-gen/scratch/zhengxc/workspace/reference/1KG_ONT_VIENNA_hg38.fa"
+NTASKS=24
 
 let MAX_FILES=$(wc -l ${SNF2_PATH} | cut -d " " -f 1)+100
 
@@ -21,8 +20,8 @@ ulimit -n ${MAX_FILES}
 
 python ${SNF2_PATH} \
     --input "${INPUT_FILE_TSV}" \
-    --vcf ${OUTPUT}.vcf.gz \
+    --vcf ${OUTPUT}.vcf \
     --minsvlen 50 \
     --reference ${REFERENCE} \
     --threads ${NTASKS} \
-    ${EXTRA_PARAM}
+    --no-sort

@@ -5,8 +5,8 @@
 #SBATCH --partition=medium
 #SBATCH --account=proj-fs0002
 
-. /stornext/snfs4/next-gen/scratch/luis/hermann/conda3/etc/profile.d/conda.sh
-conda activate sniffles
+. /stornext/snfs130/fritz/luis/miniconda3_py310_24_3/etc/profile.d/conda.sh
+conda activate snf2dev
 
 # sniffles2
 SNF2_PATH=$1
@@ -31,7 +31,7 @@ do
     # save name
     merge_names+=(${bamid})
     printf "%s\t%s\n" ${OUTPUT}_${bamid}.snf ${bamid} >> ${OUTPUT}.tsv
-    /usr/bin/time -v -o log_snf2_time_${OUTPUT}_${bamid}.txt  ${SNF2_PATH} \
+    ${SNF2_PATH} \
         --input ${bam} \
         --vcf ${OUTPUT}_${bamid}.vcf.gz \
         --threads ${NTASKS} \
@@ -43,7 +43,7 @@ do
 done
 
 # sniffles2 merge
-/usr/bin/time -v -o log_snf2_time_merge.txt  ${SNF2_PATH} \
+${SNF2_PATH} \
     --input ${OUTPUT}.tsv \
     --vcf ${OUTPUT}.vcf.gz \
     --minsvlen 50 \
