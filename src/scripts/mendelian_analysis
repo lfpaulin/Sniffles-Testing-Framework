@@ -7,19 +7,19 @@ do
         [[ ! -d "mendelian_${seq}/results" ]] && mkdir mendelian_${seq}/results
         echo "# ${seq}|${ver} => ${vcf}";
         echo "## Original"
-        bcftools +mendelian --pfm 1X:hg002,hg003,hg004 --mode c ${vcf} |  grep "^n"
-        bcftools +mendelian --pfm 1X:hg002,hg003,hg004 --mode e ${vcf} | nutty pop --only-gt | \
+        bcftools +mendelian2 --pfm 1X:hg002,hg003,hg004 --mode c ${vcf} |  grep "^n"
+        bcftools +mendelian2 --pfm 1X:hg002,hg003,hg004 --mode e ${vcf} | nutty pop --only-gt | \
             grep -v "#" | cut -f 6,8,9,10 |  sort | uniq -c | sort -k 1 > mendelian_${seq}/results/trio_${ver}_OG_gt_supp.txt
         bcftools  ${vcf} | nutty sv --info-tag SUPP_VEC | \
             cut -f 3 | sort | uniq -c > mendelian_${seq}/results/trio_${ver}_OG_supp.txt
         echo "## SUPP_VEC + GT fixed"
         zcat ${vcf} | nutty pop --fix-suppvec --fix-gt --output-vcf | \
-            bcftools +mendelian --pfm 1X:hg002,hg003,hg004 --mode c - |  grep "^n"
+            bcftools +mendelian2 --pfm 1X:hg002,hg003,hg004 --mode c - |  grep "^n"
         zcat ${vcf} | nutty pop --fix-suppvec --fix-gt --output-vcf | \
-            bcftools +mendelian --pfm 1X:hg002,hg003,hg004 --mode e - | nutty pop --only-gt | \
+            bcftools +mendelian2 --pfm 1X:hg002,hg003,hg004 --mode e - | nutty pop --only-gt | \
             grep -v "#" | cut -f 6,8,9,10 |  sort | uniq -c | sort -k 1 > mendelian_${seq}/results/trio_${ver}_FX_gt_supp.txt
         zcat ${vcf} | nutty pop --fix-suppvec --fix-gt --output-vcf | \
-            bcftools +mendelian --pfm 1X:hg002,hg003,hg004 --mode e - | nutty sv --info-tag SUPP_VEC | \
+            bcftools +mendelian2 --pfm 1X:hg002,hg003,hg004 --mode e - | nutty sv --info-tag SUPP_VEC | \
             cut -f 3 | sort | uniq -c > mendelian_${seq}/results/trio_${ver}_FX_supp.txt
     done
 done

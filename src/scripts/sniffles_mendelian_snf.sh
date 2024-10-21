@@ -5,8 +5,8 @@
 #SBATCH --partition=medium
 #SBATCH --account=proj-fs0002
 
-. /stornext/snfs4/next-gen/scratch/luis/hermann/conda3/etc/profile.d/conda.sh
-conda activate sniffles
+. /stornext/snfs130/fritz/luis/miniconda3_py310_24_3/etc/profile.d/conda.sh
+conda activate snf2dev
 
 # sniffles2
 SNF2_PATH=$1
@@ -28,7 +28,7 @@ P=$(cat ${SNF_LIST} | tail -n 1 | cut -f 2)               # third  elem of three
 trio_names_string="${M},${F},${P}"
 
 # sniffles2 merge
-/usr/bin/time -v -o log_snf2_time${OUTPUT}_trio.txt  ${SNF2_PATH} \
+${SNF2_PATH} \
     --input ${SNF_TSV_LIST} \
     --vcf ${OUTPUT}.vcf.gz \
     --minsvlen 50 \
@@ -36,4 +36,4 @@ trio_names_string="${M},${F},${P}"
     --threads ${NTASKS}
 
 # bcftools mendelian
-bcftools +mendelian --trio ${trio_names_string}  --mode c  ${OUTPUT}.vcf.gz >  ${OUTPUT}.mendelian
+bcftools +mendelian2 --pfm 1X:hg002,hg003,hg004  --mode c ${OUTPUT}.vcf.gz |  grep "^n" >  ${OUTPUT}.mendelian
