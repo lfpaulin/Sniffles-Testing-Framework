@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys 
 import json 
-from benchmarks.snf_threads import SNFThreads, SNFThreadsParams
 import config
 import time
 from benchmarks.merge_bench import PopMergeTestParam
@@ -14,7 +13,8 @@ from benchmarks.mendelian import TrioBenchParam
 from benchmarks.mendelian import TrioBench
 from benchmarks.genotyper import GenotyperParam
 from benchmarks.genotyper import GenotyperBench
-from benchmarks.snf_threads import SNFThreads
+from benchmarks.snf_threads import SNFThreads, SNFThreadsParams
+from benchmarks.ont_large_deldup import ONTLargeDelDup, ONTLargeDelDupParams
 from utils import generate_id
 from utils.logger import setup_log
 
@@ -154,6 +154,11 @@ def full_bench(user_args):
     snf_threads_bench = SNFThreads(snf_threads_params, bench_id, FRAMEWORK_SRC_PATH)
     snf_threads_bench.bench()
     time.sleep(2)
+    # NOTE: ONT specific
+    ont_large_deldup_params = ONTLargeDelDupParams()
+    ont_large_deldup_params.set_parameters_from_json(params_json["large_deldup_ont_colo"])
+    ont_large_deldup_bench = ONTLargeDelDup(ont_large_deldup_params, bench_id, FRAMEWORK_SRC_PATH)
+    ont_large_deldup_bench.bench()
     # NOTE: Mosaic
     my_logger.warning("mosaic missing")
     # TODO: finish BAM
