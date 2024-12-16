@@ -8,15 +8,13 @@
 conda activate snf2dev
 
 
-SNF2_PATH="/stornext/snfs4/next-gen/scratch/luis/hermann/bin/Sniffles_dev/src/sniffles2"
+SNF2_PATH="/stornext/snfs170/next-gen/scratch/luis/hermann/bin/Sniffles_dev/src/sniffles2"
 INPUT_FILE_TSV=$1
 OUTPUT=$2
-REFERENCE="/stornext/snfs4/next-gen/scratch/zhengxc/workspace/reference/1KG_ONT_VIENNA_hg38.fa"
+REFERENCE="/stornext/snfs170/next-gen/scratch/zhengxc/workspace/reference/1KG_ONT_VIENNA_hg38.fa"
 NTASKS=24
 
-let MAX_FILES=$(wc -l ${SNF2_PATH} | cut -d " " -f 1)+100
-
-ulimit -n ${MAX_FILES}
+ulimit -n 32768
 
 python ${SNF2_PATH} \
     --input "${INPUT_FILE_TSV}" \

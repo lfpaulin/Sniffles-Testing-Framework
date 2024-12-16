@@ -133,7 +133,7 @@ class GIABBench(object):
             self.args.truvari["vcf"],
             self.args.truvari["bed"],
             self.args.reference,
-            self.args.truvari["bench"]
+            self.args.truvari["bench"], "1"
         ])
         job.make(cmd)
         job.submit()
@@ -164,7 +164,7 @@ class GIABBench(object):
                 self.args.truvari2["vcf"],
                 self.args.truvari2["bed"],
                 self.args.reference,
-                self.args.truvari2["bench"]
+                self.args.truvari2["bench"], "0"
             ])
             job2.make(cmd)
             job2.submit()

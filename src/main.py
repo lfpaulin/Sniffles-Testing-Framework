@@ -106,9 +106,21 @@ def full_bench(user_args):
     giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_bench.bench()
     time.sleep(2)
+    # NOTE: GIAB ONT hg19-low TO BE ADDED
+    # giab_params = GIABBenchParam()
+    # giab_params.set_parameters_from_json(params_json["giabsv_ont_hg19_low"])
+    # giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
+    # giabsv_bench.bench()
+    # time.sleep(2)
     # NOTE: GIAB HiFI hg19
     giab_hifi_params = GIABBenchParam()
-    giab_hifi_params.set_parameters_from_json(params_json["giab_hifi_hg19"])
+    giab_hifi_params.set_parameters_from_json(params_json["giabsv_hifi_hg19"])
+    giabsv_hifi_bench = GIABBench(giab_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
+    giabsv_hifi_bench.bench()
+    time.sleep(2)
+    # NOTE: GIAB HiFI hg19-low
+    giab_hifi_params = GIABBenchParam()
+    giab_hifi_params.set_parameters_from_json(params_json["giabsv_hifi_hg19_low"])
     giabsv_hifi_bench = GIABBench(giab_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_hifi_bench.bench()
     time.sleep(2)
@@ -150,7 +162,7 @@ def full_bench(user_args):
     time.sleep(2)
     # NOTE: Threads
     snf_threads_params = SNFThreadsParams()
-    snf_threads_params.set_parameters_from_json(params_json["giab_hifi_hg19_threads"])
+    snf_threads_params.set_parameters_from_json(params_json["giabsv_hifi_hg19_threads"])
     snf_threads_bench = SNFThreads(snf_threads_params, bench_id, FRAMEWORK_SRC_PATH)
     snf_threads_bench.bench()
     time.sleep(2)
