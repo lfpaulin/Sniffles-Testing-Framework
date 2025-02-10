@@ -21,14 +21,14 @@ class GenotyperParam(object):
         self.skip_old = None
         self.skip_new = None
 
-    def set_parameters_from_json(self, json_dict):
-        self.base_dir = json_dict["base_dir"]
-        self.data_dir = json_dict["data_dir"]
-        self.bam = f'{json_dict["data_dir"]}/{json_dict["bam_file"]}'
-        self.dir_out = f'{json_dict["base_dir"]}/{json_dict["directory"]}'
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir):
+        self.base_dir = base_dir
+        self.data_dir = data_dir
+        self.bam = f'{data_dir}/{json_dict["bam_file"]}'
+        self.dir_out = f'{base_dir}/{json_dict["directory"]}'
         self.output = json_dict["output"]
         self.reference = json_dict["reference"]
-        self.vcf_input = f'{json_dict["data_dir"]}/{json_dict["vcf_input"]}'
+        self.vcf_input = f'{data_dir}/{json_dict["vcf_input"]}'
         self.snf2_old = json_dict["snf_current"]
         self.snf2_new = json_dict["snf_new"]
         self.snf2_old_ver = json_dict["snf_current_ver"]

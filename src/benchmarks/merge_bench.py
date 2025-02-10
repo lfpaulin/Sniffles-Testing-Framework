@@ -19,7 +19,7 @@ class PopMergeTestParam(object):
         self.skip_old = None
         self.skip_new = None
 
-    def set_parameters_from_json(self, json_dict):
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir):
         self.snf_list = json_dict["snf_list"]
         self.dir_out = json_dict["directory"]
         self.output = json_dict["output"]
@@ -129,12 +129,12 @@ class MergeTestParam(object):
         self.skip_old = None
         self.skip_new = None
 
-    def set_parameters_from_json(self, json_dict):
-        self.base_dir = json_dict["base_dir"]
-        self.data_dir = json_dict["data_dir"]
-        self.sample1 = f'{json_dict["data_dir"]}/{json_dict["sample1"]}'
-        self.sample2 = f'{json_dict["data_dir"]}/{json_dict["sample2"]}'
-        self.dir_out = f'{json_dict["base_dir"]}/{json_dict["directory"]}'
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir):
+        self.base_dir = base_dir
+        self.data_dir = data_dir
+        self.sample1 = f'{data_dir}/{json_dict["sample1"]}'
+        self.sample2 = f'{data_dir}/{json_dict["sample2"]}'
+        self.dir_out = f'{base_dir}/{json_dict["directory"]}'
         self.output = json_dict["output"]
         self.reference = json_dict["reference"]
         self.tandem_rep = json_dict["tandem_repeat"]

@@ -25,9 +25,9 @@ class GIABBenchParam(object):
         self.skip_new = None
         self.truvari2 = None
 
-    def set_parameters_from_json(self, json_dict):
-        self.base_dir = json_dict["base_dir"]
-        self.data_dir = json_dict["data_dir"]
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir):
+        self.base_dir = base_dir
+        self.data_dir = data_dir
         self.bam = f'{self.data_dir}/{json_dict["bam_file"]}'
         self.dir_out = f'{self.base_dir}/{json_dict["directory"]}'
         self.output = json_dict["output"]

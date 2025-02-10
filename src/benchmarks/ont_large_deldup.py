@@ -22,11 +22,11 @@ class ONTLargeDelDupParams(object):
         self.skip_old = None
         self.skip_new = None
 
-    def set_parameters_from_json(self, json_dict):
-        self.base_dir = json_dict["base_dir"]
-        self.data_dir = json_dict["data_dir"]
-        self.bam = f'{json_dict["data_dir"]}/{json_dict["bam_file"]}'
-        self.dir_out = f'{json_dict["base_dir"]}/{json_dict["directory"]}'
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir):
+        self.base_dir = base_dir
+        self.data_dir = data_dir
+        self.bam = f'{data_dir}/{json_dict["bam_file"]}'
+        self.dir_out = f'{base_dir}/{json_dict["directory"]}'
         self.output = json_dict["output"]
         self.reference = json_dict["reference"]
         self.snf2_old = json_dict["snf_current"]

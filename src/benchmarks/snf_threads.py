@@ -20,7 +20,7 @@ class SNFThreadsParams(object):
         self.skip_old = None
         self.skip_new = None
 
-    def set_parameters_from_json(self, json_dict):
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir):
         self.bam = json_dict["bam_file"]
         self.dir_out = json_dict["directory"]
         self.output = json_dict["output"]
