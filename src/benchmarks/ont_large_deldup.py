@@ -6,6 +6,8 @@ from utils.logger import setup_log
 
 class ONTLargeDelDupParams(object):
     def __init__(self):
+        self.base_dir = None
+        self.data_dir = None
         self.bam = None
         self.dir_out = None
         self.output = None
@@ -21,8 +23,10 @@ class ONTLargeDelDupParams(object):
         self.skip_new = None
 
     def set_parameters_from_json(self, json_dict):
-        self.bam = json_dict["bam_file"]
-        self.dir_out = json_dict["directory"]
+        self.base_dir = json_dict["base_dir"]
+        self.data_dir = json_dict["data_dir"]
+        self.bam = f'{json_dict["data_dir"]}/{json_dict["bam_file"]}'
+        self.dir_out = f'{json_dict["base_dir"]}/{json_dict["directory"]}'
         self.output = json_dict["output"]
         self.reference = json_dict["reference"]
         self.snf2_old = json_dict["snf_current"]

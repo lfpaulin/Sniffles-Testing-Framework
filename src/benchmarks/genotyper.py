@@ -5,6 +5,8 @@ from utils.logger import setup_log
 
 class GenotyperParam(object):
     def __init__(self):
+        self.base_dir = None
+        self.data_dir = None
         self.bam = None
         self.dir_out = None
         self.output = None
@@ -20,11 +22,13 @@ class GenotyperParam(object):
         self.skip_new = None
 
     def set_parameters_from_json(self, json_dict):
-        self.bam = json_dict["bam_file"]
-        self.dir_out = json_dict["directory"]
+        self.base_dir = json_dict["base_dir"]
+        self.data_dir = json_dict["data_dir"]
+        self.bam = f'{json_dict["data_dir"]}/{json_dict["bam_file"]}'
+        self.dir_out = f'{json_dict["base_dir"]}/{json_dict["directory"]}'
         self.output = json_dict["output"]
         self.reference = json_dict["reference"]
-        self.vcf_input = json_dict["vcf_input"]
+        self.vcf_input = f'{json_dict["data_dir"]}/{json_dict["vcf_input"]}'
         self.snf2_old = json_dict["snf_current"]
         self.snf2_new = json_dict["snf_new"]
         self.snf2_old_ver = json_dict["snf_current_ver"]

@@ -4,6 +4,8 @@ from utils.logger import setup_log
 
 class TrioBenchParam(object):
     def __init__(self):
+        self.base_dir = None
+        self.data_dir = None
         self.proband = None
         self.father = None
         self.mother = None
@@ -24,12 +26,14 @@ class TrioBenchParam(object):
         self.skip_new = None
 
     def set_parameters_from_json(self, json_dict):
-        self.proband = json_dict["proband"]
-        self.father = json_dict["father"]
-        self.mother = json_dict["mother"]
+        self.base_dir = json_dict["base_dir"]
+        self.data_dir = json_dict["data_dir"]
+        self.proband = f'{json_dict["data_dir"]}/{json_dict["proband"]}'
+        self.father = f'{json_dict["data_dir"]}/{json_dict["father"]}'
+        self.mother = f'{json_dict["data_dir"]}/{json_dict["mother"]}'
         self.use_snf = bool(json_dict["use_snf"])
         self.snf_list = json_dict["snf_list"]
-        self.dir_out = json_dict["directory"]
+        self.dir_out = f'{json_dict["base_dir"]}/{json_dict["directory"]}'
         self.output = json_dict["output"]
         self.reference = json_dict["reference"]
         self.tandem_rep = json_dict["tandem_repeat"]

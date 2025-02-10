@@ -112,6 +112,8 @@ class MergeXLBench(object):
 
 class MergeTestParam(object):
     def __init__(self):
+        self.base_dir = None
+        self.data_dir = None
         self.sample1 = None
         self.sample2 = None
         self.dir_out = None
@@ -128,9 +130,11 @@ class MergeTestParam(object):
         self.skip_new = None
 
     def set_parameters_from_json(self, json_dict):
-        self.sample1 = json_dict["sample1"]
-        self.sample2 = json_dict["sample2"]
-        self.dir_out = json_dict["directory"]
+        self.base_dir = json_dict["base_dir"]
+        self.data_dir = json_dict["data_dir"]
+        self.sample1 = f'{json_dict["data_dir"]}/{json_dict["sample1"]}'
+        self.sample2 = f'{json_dict["data_dir"]}/{json_dict["sample2"]}'
+        self.dir_out = f'{json_dict["base_dir"]}/{json_dict["directory"]}'
         self.output = json_dict["output"]
         self.reference = json_dict["reference"]
         self.tandem_rep = json_dict["tandem_repeat"]
