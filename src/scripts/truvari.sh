@@ -39,7 +39,7 @@ truvari bench \
 # Stratification
 DO_STRAT=$9
 if [[ "${DO_STRAT}" == "1" ]];
-do
+then
     if [[ -d "${OUTPUT_OLD}_${BENCH}" ]];
     then
         cd ${OUTPUT_OLD}_${BENCH}

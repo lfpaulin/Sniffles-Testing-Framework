@@ -129,14 +129,14 @@ class MergeTestParam(object):
         self.skip_old = None
         self.skip_new = None
 
-    def set_parameters_from_json(self, json_dict, base_dir, data_dir):
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir, reference):
         self.base_dir = base_dir
         self.data_dir = data_dir
+        self.reference = reference
         self.sample1 = f'{data_dir}/{json_dict["sample1"]}'
         self.sample2 = f'{data_dir}/{json_dict["sample2"]}'
         self.dir_out = f'{base_dir}/{json_dict["directory"]}'
         self.output = json_dict["output"]
-        self.reference = json_dict["reference"]
         self.tandem_rep = json_dict["tandem_repeat"]
         self.snf2_old = json_dict["snf_current"]
         self.snf2_new = json_dict["snf_new"]

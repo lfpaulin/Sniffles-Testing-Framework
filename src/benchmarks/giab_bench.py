@@ -25,13 +25,13 @@ class GIABBenchParam(object):
         self.skip_new = None
         self.truvari2 = None
 
-    def set_parameters_from_json(self, json_dict, base_dir, data_dir):
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir, reference):
         self.base_dir = base_dir
         self.data_dir = data_dir
+        self.reference = reference
         self.bam = f'{self.data_dir}/{json_dict["bam_file"]}'
         self.dir_out = f'{self.base_dir}/{json_dict["directory"]}'
         self.output = json_dict["output"]
-        self.reference = json_dict["reference"]
         self.tandem_rep = json_dict["tandem_repeat"]
         self.snf2_old = json_dict["snf_current"]
         self.snf2_new = json_dict["snf_new"]
@@ -119,15 +119,16 @@ class GIABBench(object):
         if self.args.skip_old and self.args.skip_new:
             self.logger.error(f'Both analysis have the "skip" option on... none has run.')
         elif self.args.skip_old:
-            self.logger.info(f'Only running new version of Sniffles2.')
+            self.logger.info(f'Only using new version of Sniffles2.')
             job.set_dependencies(f'afterok:{new.job_id}')
         elif self.args.skip_new:
-            self.logger.info(f'Only running current version of Sniffles2.')
+            self.logger.info(f'Only using current version of Sniffles2.')
             job.set_dependencies(f'afterok:{old.job_id}')
         else:
-            self.logger.info(f'Running both versions of Sniffles2.')
+            self.logger.info(f'Using both versions of Sniffles2.')
             job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
         # truvari command
+        self.logger.info(f'Running GIAB SV-bench v1.')
         cmd = " ".join([
             f'{self.src_path}/scripts/truvari.sh', 
             f'{self.args.output}_{self.args.snf2_old_ver}.vcf.gz',
@@ -150,15 +151,16 @@ class GIABBench(object):
             if self.args.skip_old and self.args.skip_new:
                 self.logger.error(f'Both analysis have the "skip" option on... none has run.')
             elif self.args.skip_old:
-                self.logger.info(f'Only running new version of Sniffles2.')
+                self.logger.info(f'Only using new version of Sniffles2.')
                 job2.set_dependencies(f'afterok:{new.job_id}')
             elif self.args.skip_new:
-                self.logger.info(f'Only running current version of Sniffles2.')
+                self.logger.info(f'Only using current version of Sniffles2.')
                 job2.set_dependencies(f'afterok:{old.job_id}')
             else:
-                self.logger.info(f'Running both versions of Sniffles2.')
+                self.logger.info(f'Using both versions of Sniffles2.')
                 job2.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
             # truvari command
+            self.logger.info(f'Running GIAB SV-bench CMRG.')
             cmd = " ".join([
                 f'{self.src_path}/scripts/truvari.sh',
                 f'{self.args.output}_{self.args.snf2_old_ver}.vcf.gz',
@@ -182,4 +184,4 @@ class GIABBench(object):
         if not self.args.skip_new:
             sniffles_new = self.sniffles_new()
         if sniffles_new is not None or sniffles_new is not None:
-            self.compare(sniffles_current, sniffles_new)
+            self.compare(sniffles_current, sniffles_new, "GIAB")

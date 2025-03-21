@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import json
 import argparse
 
@@ -39,6 +39,7 @@ def compare(snf_truvari_old, snf_truvari_new):
     snf2_new = open(snf_truvari_new)
     snf2_old_dict = json.load(snf2_old)
     snf2_new_dict = json.load(snf2_new)
+    print(f'STAT\tvPrevious\tvNew\tDifference')
     for info in info_needed_int:
         if type(snf2_new_dict[info]) == type(0) and type(snf2_old_dict[info]) == type(0):
             int_val_diff = (snf2_new_dict[info]-snf2_old_dict[info])

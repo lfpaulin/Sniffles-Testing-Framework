@@ -23,5 +23,17 @@ ${SNF2_PATH} \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
     --minsvlen 50  \
+    --output-rnames \
+    --sample-id ${OUTPUT} \
+    ${USE_TANDEM_REP}  ${EXTRA_PARAM}
+
+${SNF2_PATH} \
+    --input ${INPUT} \
+    --vcf ${OUTPUT}_noqc.vcf.gz \
+    --threads ${NTASKS} \
+    --reference ${REFERENCE} \
+    --minsvlen 50  \
+    --output-rnames \
+    --no-qc \
     --sample-id ${OUTPUT} \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}

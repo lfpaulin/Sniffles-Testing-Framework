@@ -14,8 +14,8 @@ conda create \
 
 conda activate build_pypi 
 
-wget https://github.com/lfpaulin/Snifflesv253/archive/refs/tags/v2.5.3.tar.gz
-python -m pip install v2.5.3.tar.gz
+wget https://github.com/lfpaulin/Sniffles/archive/refs/tags/v2.6.tar.gz
+python -m pip install v2.6.tar.gz
 
 # CONDA
 # condabuild
@@ -28,6 +28,7 @@ conda create \
 conda activate condabuild  
 
 conda-build sniffles
+cd /mnt/ssd_ubuntu/baylor_current/sniffles/build
 
 # DELETE ENVS
 conda activate base

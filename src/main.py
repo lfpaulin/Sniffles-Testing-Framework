@@ -102,31 +102,46 @@ def full_bench(user_args):
     params_json = json.load(open(user_args.json, "r"))
     # NOTE: GIAB ONT hg38
     giab_params = GIABBenchParam()
-    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38"], params_json["base_dir"], params_json["data_dir"])
+    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38"], 
+                                         params_json["base_dir"], 
+                                         params_json["data_dir"],
+                                         params_json["reference"])
     giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_bench.bench()
     time.sleep(2)
     # NOTE: GIAB HiFI hg38
     giab_hifi_params = GIABBenchParam()
-    giab_hifi_params.set_parameters_from_json(params_json["hg002_hifi_hg38"], params_json["base_dir"], params_json["data_dir"])
+    giab_hifi_params.set_parameters_from_json(params_json["hg002_hifi_hg38"], 
+                                              params_json["base_dir"], 
+                                              params_json["data_dir"],
+                                              params_json["reference"])
     giabsv_hifi_bench = GIABBench(giab_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_hifi_bench.bench()
     time.sleep(2)
     # NOTE: Mendelian
     trio_params = TrioBenchParam()
-    trio_params.set_parameters_from_json(params_json["mendelian_ont"], params_json["base_dir"], params_json["data_dir"])
+    trio_params.set_parameters_from_json(params_json["mendelian_ont"], 
+                                         params_json["base_dir"], 
+                                         params_json["data_dir"],
+                                         params_json["reference"])
     triosv_bench = TrioBench(trio_params, bench_id, FRAMEWORK_SRC_PATH)
     triosv_bench.bench()
     time.sleep(2)
     # NOTE: Mendelian HiFi
     trio_hifi_params = TrioBenchParam()
-    trio_hifi_params.set_parameters_from_json(params_json["mendelian_hifi"], params_json["base_dir"], params_json["data_dir"])
+    trio_hifi_params.set_parameters_from_json(params_json["mendelian_hifi"], 
+                                              params_json["base_dir"], 
+                                              params_json["data_dir"],
+                                              params_json["reference"])
     triosv_hifi_bench = TrioBench(trio_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
     triosv_hifi_bench.bench()
     time.sleep(2)
     # NOTE: Merge
     merge_params = MergeTestParam()
-    merge_params.set_parameters_from_json(params_json["merge"], params_json["base_dir"], params_json["data_dir"])
+    merge_params.set_parameters_from_json(params_json["merge"], 
+                                          params_json["base_dir"], 
+                                          params_json["data_dir"],
+                                          params_json["reference"])
     merge_bench = MergeBench(merge_params, bench_id, FRAMEWORK_SRC_PATH)
     merge_bench.bench()
     time.sleep(2)
@@ -136,15 +151,12 @@ def full_bench(user_args):
     # genotyper_bench = GenotyperBench(genotyper_params, bench_id, FRAMEWORK_SRC_PATH)
     # genotyper_bench.bench()
     # time.sleep(2)
-    # NOTE: Threads
-    # snf_threads_params = SNFThreadsParams()
-    # snf_threads_params.set_parameters_from_json(params_json["giabsv_hifi_hg19_threads"], params_json["base_dir"], params_json["data_dir"])
-    # snf_threads_bench = SNFThreads(snf_threads_params, bench_id, FRAMEWORK_SRC_PATH)
-    # snf_threads_bench.bench()
-    # time.sleep(2)
     # NOTE: ONT specific
     ont_large_deldup_params = ONTLargeDelDupParams()
-    ont_large_deldup_params.set_parameters_from_json(params_json["large_deldup_ont_colo"], params_json["base_dir"], params_json["data_dir"])
+    ont_large_deldup_params.set_parameters_from_json(params_json["large_deldup_ont_colo"], 
+                                                     params_json["base_dir"], 
+                                                     params_json["data_dir"],
+                                                     params_json["reference"])
     ont_large_deldup_bench = ONTLargeDelDup(ont_large_deldup_params, bench_id, FRAMEWORK_SRC_PATH)
     ont_large_deldup_bench.bench()
     # NOTE: Mosaic
