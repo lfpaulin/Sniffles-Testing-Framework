@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --ntasks=8
-#SBATCH --mem=16Gb
+#SBATCH --mem=32Gb
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=medium
 #SBATCH --account=proj-fs0002

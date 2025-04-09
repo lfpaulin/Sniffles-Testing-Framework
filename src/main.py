@@ -100,6 +100,15 @@ def full_bench(user_args):
     my_logger.info(f'Framework path: {FRAMEWORK_SRC_PATH}')
     bench_id = generate_id.make_id()
     params_json = json.load(open(user_args.json, "r"))
+    # NOTE: GIAB ONT hg38 5khz
+    giab_params = GIABBenchParam()
+    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38_5khz"], 
+                                         params_json["base_dir"], 
+                                         params_json["data_dir"],
+                                         params_json["reference"])
+    giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
+    giabsv_bench.bench()
+    time.sleep(2)
     # NOTE: GIAB ONT hg38
     giab_params = GIABBenchParam()
     giab_params.set_parameters_from_json(params_json["hg002_ont_hg38"], 
