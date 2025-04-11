@@ -25,6 +25,7 @@ ${SNF2_PATH} \
     --minsvlen 50  \
     --output-rnames \
     --sample-id ${OUTPUT} \
+    --dev-monitor-memory 30 \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}
 
 ${SNF2_PATH} \
@@ -36,4 +37,5 @@ ${SNF2_PATH} \
     --output-rnames \
     --no-qc \
     --sample-id ${OUTPUT} \
+    --dev-monitor-memory 30 \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}
