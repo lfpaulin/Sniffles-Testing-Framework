@@ -161,13 +161,15 @@ def full_bench(user_args):
     # genotyper_bench.bench()
     # time.sleep(2)
     # NOTE: ONT specific
-    ont_large_deldup_params = ONTLargeDelDupParams()
-    ont_large_deldup_params.set_parameters_from_json(params_json["large_deldup_ont_colo"], 
-                                                     params_json["base_dir"], 
-                                                     params_json["data_dir"],
-                                                     params_json["reference"])
-    ont_large_deldup_bench = ONTLargeDelDup(ont_large_deldup_params, bench_id, FRAMEWORK_SRC_PATH)
-    ont_large_deldup_bench.bench()
+    # TODO: update
+    my_logger.warning("large events missing")
+    # ont_large_deldup_params = ONTLargeDelDupParams()
+    # ont_large_deldup_params.set_parameters_from_json(params_json["large_deldup_ont_colo"], 
+    #                                                  params_json["base_dir"], 
+    #                                                  params_json["data_dir"],
+    #                                                  params_json["reference"])
+    # ont_large_deldup_bench = ONTLargeDelDup(ont_large_deldup_params, bench_id, FRAMEWORK_SRC_PATH)
+    # ont_large_deldup_bench.bench()
     # NOTE: Mosaic
     my_logger.warning("mosaic missing")
     # TODO: finish BAM
