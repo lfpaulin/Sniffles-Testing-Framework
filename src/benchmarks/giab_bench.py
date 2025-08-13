@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 import os
+import sys
 import json
 from utils import jobs_slurm
 from utils.logger import setup_log
@@ -63,45 +65,32 @@ class GIABBench(object):
         self.src_path = src_path
         self.logger = setup_log(__name__, True)
     
-    def sniffles_current(self):
-        self.logger.info("Sniffles2 current version")
+    def sniffles_run(self, version: str):
+        if "old" == version:
+            use_ver = self.args.snf2_old_ver
+            use_bin = self.args.snf2_old
+        elif "new" == version:
+            use_ver = self.args.snf2_new_ver
+            use_bin = self.args.snf2_new
+        else:
+            self.logger.error(f"Not a known version: {version}, exiting with error")
+            sys.exit(0)
+        self.logger.info(f"Sniffles2 {version} version")
         job = jobs_slurm.SubmitJobsSlurm()
-        job.set_output(f'log_{self.id}_snf2_call_{self.args.snf2_old_ver}.out')
-        job.set_error(f'log_{self.id}_snf2_call_{self.args.snf2_old_ver}.err')
+        job.set_output(f'log_{self.id}_snf2_call_{use_ver}.out')
+        job.set_error(f'log_{self.id}_snf2_call_{use_ver}.err')
         job.set_chdir(f'{self.args.dir_out}')
         if not os.path.exists(f'{self.args.dir_out}'):
             os.mkdir(f'{self.args.dir_out}')
-        job.set_jname(f'call{self.args.snf2_old_ver}')
+        job.set_jname(f'call{use_ver}')
         cmd = " ".join([
             f'{self.src_path}/scripts/sniffles.sh',
-            self.args.snf2_old,
+            use_bin,
             self.args.bam,
-            f'{self.args.output}_{self.args.snf2_old_ver}',
+            f'{self.args.output}_{use_ver}',
             self.args.reference, 
             self.args.tandem_rep,
             f'"{self.args.snf2_param_string}"'
-        ])
-        job.make(cmd)
-        job.submit()
-        return job
-
-    def sniffles_new(self):
-        self.logger.info("Sniffles2 new version")
-        job = jobs_slurm.SubmitJobsSlurm()
-        job.set_output(f'log_{self.id}_snf2_call_{self.args.snf2_new_ver}.out')
-        job.set_error(f'log_{self.id}_snf2_call_{self.args.snf2_new_ver}.err')
-        job.set_chdir(f'{self.args.dir_out}')
-        if not os.path.exists(f'{self.args.dir_out}'):
-            os.mkdir(f'{self.args.dir_out}')
-        job.set_jname(f'call{self.args.snf2_new_ver}')
-        cmd = " ".join([
-            f'{self.src_path}/scripts/sniffles.sh',
-            self.args.snf2_new,
-            self.args.bam,
-            f'{self.args.output}_{self.args.snf2_new_ver}',
-            self.args.reference,
-            self.args.tandem_rep,
-            f'"{self.args.snf2_param_string}" '
         ])
         job.make(cmd)
         job.submit()
@@ -175,13 +164,183 @@ class GIABBench(object):
             job2.make(cmd)
             job2.submit()
 
+    def bench(self):
+        sniffles_current = None
+        sniffles_new = None
+        if not self.args.skip_old:
+            sniffles_current = self.sniffles_run("old")
+        if not self.args.skip_new:
+            sniffles_new = self.sniffles_run("new")
+        if sniffles_new is not None or sniffles_new is not None:
+            self.compare(sniffles_current, sniffles_new, "GIAB")
+
+
+class GIABBND(object):
+    def __init__(self, bench_args, bench_id, src_path):
+        self.args = bench_args
+        self.id = bench_id
+        self.src_path = src_path
+        self.logger = setup_log(__name__, True)
+    
+    def sniffles_run(self, version: str):
+        if "old" == version:
+            use_ver = self.args.snf2_old_ver
+            use_bin = self.args.snf2_old
+        elif "new" == version:
+            use_ver = self.args.snf2_new_ver
+            use_bin = self.args.snf2_new
+        else:
+            self.logger.error(f"Not a known version: {version}, exiting with error")
+            sys.exit(0)
+        self.logger.info(f"Sniffles2 {version} version")
+        job = jobs_slurm.SubmitJobsSlurm()
+        job.set_output(f'log_{self.id}_snf2_call_{use_ver}.out')
+        job.set_error(f'log_{self.id}_snf2_call_{use_ver}.err')
+        job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
+        job.set_jname(f'call{use_ver}')
+        cmd = " ".join([
+            f'{self.src_path}/scripts/sniffles.sh',
+            use_bin,
+            self.args.bam,
+            f'{self.args.output}_{use_ver}',
+            self.args.reference, 
+            self.args.tandem_rep,
+            f'"{self.args.snf2_param_string}"'
+        ])
+        job.make(cmd)
+        job.submit()
+        return job
+
+    def compare(self, old, new, bench_name=""):
+        self.logger.info(f'Sniffles2 bench compare: {bench_name}')
+        job = jobs_slurm.SubmitJobsSlurm()
+        job.set_output(f'log_{self.id}_snf2_bench_bnds.out')
+        job.set_error(f'log_{self.id}_snf2_bench_bnds.err')
+        job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
+        job.set_jname(f'snf2BND')
+        if self.args.skip_old and self.args.skip_new:
+            self.logger.error(f'Both analysis have the "skip" option on... none has run.')
+        elif self.args.skip_old:
+            self.logger.info(f'Only using new version of Sniffles2.')
+            job.set_dependencies(f'afterok:{new.job_id}')
+        elif self.args.skip_new:
+            self.logger.info(f'Only using current version of Sniffles2.')
+            job.set_dependencies(f'afterok:{old.job_id}')
+        else:
+            self.logger.info(f'Using both versions of Sniffles2.')
+            job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
+        # truvari command
+        self.logger.info(f'Running GIAB HG008')
+        cmd = " ".join([
+            f'{self.src_path}/scripts/truvari.sh', 
+            f'{self.args.output}_{self.args.snf2_old_ver}.vcf.gz',
+            f'{self.args.output}_{self.args.snf2_old_ver}_bench',
+            f'{self.args.output}_{self.args.snf2_new_ver}.vcf.gz',
+            f'{self.args.output}_{self.args.snf2_new_ver}_bench',
+            self.args.truvari["vcf"],
+            self.args.truvari["bed"],
+            self.args.reference,
+            self.args.truvari["bench"], "1"
+        ])
+        job.make(cmd)
+        job.submit()
 
     def bench(self):
         sniffles_current = None
         sniffles_new = None
         if not self.args.skip_old:
-            sniffles_current = self.sniffles_current()
+            sniffles_current = self.sniffles_run("old")
         if not self.args.skip_new:
-            sniffles_new = self.sniffles_new()
+            sniffles_new = self.sniffles_run("new")
         if sniffles_new is not None or sniffles_new is not None:
-            self.compare(sniffles_current, sniffles_new, "GIAB")
+            self.logger.warning("WiP: BNDs")
+            # self.compare(sniffles_current, sniffles_new, "BNDs")
+
+
+class HapMapMosaic(object):
+    def __init__(self, bench_args, bench_id, src_path):
+        self.args = bench_args
+        self.id = bench_id
+        self.src_path = src_path
+        self.logger = setup_log(__name__, True)
+    
+    def sniffles_run(self, version: str):
+        if "old" == version:
+            use_ver = self.args.snf2_old_ver
+            use_bin = self.args.snf2_old
+        elif "new" == version:
+            use_ver = self.args.snf2_new_ver
+            use_bin = self.args.snf2_new
+        else:
+            self.logger.error(f"Not a known version: {version}, exiting with error")
+            sys.exit(0)
+        self.logger.info(f"Sniffles2 {version} version")
+        job = jobs_slurm.SubmitJobsSlurm()
+        job.set_output(f'log_{self.id}_snf2_call_{use_ver}.out')
+        job.set_error(f'log_{self.id}_snf2_call_{use_ver}.err')
+        job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
+        job.set_jname(f'call{use_ver}')
+        cmd = " ".join([
+            f'{self.src_path}/scripts/sniffles_mosaic.sh',
+            use_bin,
+            self.args.bam,
+            f'{self.args.output}_{use_ver}',
+            self.args.reference, 
+            self.args.tandem_rep,
+            f'"{self.args.snf2_param_string}"'
+        ])
+        job.make(cmd)
+        job.submit()
+        return job
+
+    def compare(self, old, new, bench_name=""):
+        self.logger.info(f'Sniffles2 bench compare: {bench_name}')
+        job = jobs_slurm.SubmitJobsSlurm()
+        job.set_output(f'log_{self.id}_snf2_bench_mosaic.out')
+        job.set_error(f'log_{self.id}_snf2_bench_mosaic.err')
+        job.set_chdir(f'{self.args.dir_out}')
+        if not os.path.exists(f'{self.args.dir_out}'):
+            os.mkdir(f'{self.args.dir_out}')
+        job.set_jname(f'trvGIAB')
+        if self.args.skip_old and self.args.skip_new:
+            self.logger.error(f'Both analysis have the "skip" option on... none has run.')
+        elif self.args.skip_old:
+            self.logger.info(f'Only using new version of Sniffles2.')
+            job.set_dependencies(f'afterok:{new.job_id}')
+        elif self.args.skip_new:
+            self.logger.info(f'Only using current version of Sniffles2.')
+            job.set_dependencies(f'afterok:{old.job_id}')
+        else:
+            self.logger.info(f'Using both versions of Sniffles2.')
+            job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
+        # truvari command
+        self.logger.info(f'Running SMaHT HapMap (mosaic)')
+        cmd = " ".join([
+            f'{self.src_path}/scripts/truvari.sh', 
+            f'{self.args.output}_{self.args.snf2_old_ver}.vcf.gz',
+            f'{self.args.output}_{self.args.snf2_old_ver}_bench',
+            f'{self.args.output}_{self.args.snf2_new_ver}.vcf.gz',
+            f'{self.args.output}_{self.args.snf2_new_ver}_bench',
+            self.args.truvari["vcf"],
+            self.args.truvari["bed"],
+            self.args.reference,
+            self.args.truvari["bench"], "1"
+        ])
+        job.make(cmd)
+        job.submit()
+
+    def bench(self):
+        sniffles_current = None
+        sniffles_new = None
+        if not self.args.skip_old:
+            sniffles_current = self.sniffles_run("old")
+        if not self.args.skip_new:
+            sniffles_new = self.sniffles_run("new")
+        if sniffles_new is not None or sniffles_new is not None:
+            self.compare(sniffles_current, sniffles_new, "Mosaic")

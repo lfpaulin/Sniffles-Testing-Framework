@@ -27,17 +27,17 @@ WORKDIR=$PWD
 echo "INFO: ${WORKDIR}"
 # OLD
 truvari bench \
+    --pick single \
+    --pctseq 0.7 --pctsize 0.7 \
     --base ${THUTHSET_VCF} \
     --comp ${WORKDIR}/${INVCF_OLD} \
     --output ${OUTPUT_OLD}_${BENCH} \
     --passonly \
     --includebed ${INCLUDE_BED} \
-    --refdist 1000 \
     --reference ${REFERENCE}
 
-
 # Stratification
-DO_STRAT=$9
+DO_STRAT="0"
 if [[ "${DO_STRAT}" == "1" ]];
 then
     if [[ -d "${OUTPUT_OLD}_${BENCH}" ]];
@@ -132,100 +132,105 @@ if [[ "${INVCF_NEW}" != "none" ]]
 then
     # NEW
     truvari bench \
+        --pick single \
+        --pctseq 0.7 --pctsize 0.7 \
         --base ${THUTHSET_VCF} \
         --comp ${WORKDIR}/${INVCF_NEW} \
         --output ${OUTPUT_NEW}_${BENCH} \
         --passonly \
         --includebed ${INCLUDE_BED} \
-        --refdist 1000 \
         --reference ${REFERENCE}
-    # Stratification
-    if [[ -d "${OUTPUT_NEW}_${BENCH}" ]];
+
+    if [[ "${DO_STRAT}" == "1" ]];
     then
-        cd ${OUTPUT_NEW}_${BENCH}
-        if [[ ! -d "strat" ]];
+        # Stratification
+        if [[ -d "${OUTPUT_NEW}_${BENCH}" ]];
         then
-            mkdir strat
+            cd ${OUTPUT_NEW}_${BENCH}
+            if [[ ! -d "strat" ]];
+            then
+                mkdir strat
+            fi
+            cd strat
+            # SVTYPE
+            ## DEL
+            bcftools view --include 'SVTYPE = "DEL"' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL.vcf.gz
+            bcftools view --include 'SVTYPE = "DEL"' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL.vcf.gz
+            truvari bench \
+                --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL.vcf.gz \
+                --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL.vcf.gz \
+                --output strat_new_del \
+                --passonly \
+                --includebed ${INCLUDE_BED} \
+                --refdist 1000 \
+                --reference ${REFERENCE}
+            ## DEL < 10kb
+            bcftools view --include 'SVTYPE = "DEL" && SVLEN > -10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz
+            bcftools view --include 'SVTYPE = "DEL" && SVLEN > -10000' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_small.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_small.vcf.gz
+            truvari bench \
+                --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz \
+                --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_small.vcf.gz \
+                --output strat_new_del_small \
+                --passonly \
+                --includebed ${INCLUDE_BED} \
+                --refdist 1000 \
+                --reference ${REFERENCE}
+            ## DEL >= 10kb
+            bcftools view --include 'SVTYPE = "DEL" && SVLEN <= -10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz
+            bcftools view --include 'SVTYPE = "DEL" && SVLEN <= -10000' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_large.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_large.vcf.gz
+            truvari bench \
+                --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz \
+                --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_large.vcf.gz \
+                --output strat_new_del_large \
+                --passonly \
+                --includebed ${INCLUDE_BED} \
+                --refdist 1000 \
+                --reference ${REFERENCE}
+            ## INS
+            bcftools view --include 'SVTYPE = "INS"' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS.vcf.gz
+            bcftools view --include 'SVTYPE = "INS"' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS.vcf.gz
+            truvari bench \
+                --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS.vcf.gz \
+                --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS.vcf.gz \
+                --output strat_new_ins \
+                --passonly \
+                --includebed ${INCLUDE_BED} \
+                --refdist 1000 \
+                --reference ${REFERENCE}
+            ## INS < 10000
+            bcftools view --include 'SVTYPE = "INS" && SVLEN < 10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_small.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_small.vcf.gz
+            bcftools view --include 'SVTYPE = "INS" && SVLEN < 10000' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_small.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_small.vcf.gz
+            truvari bench \
+                --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_small.vcf.gz \
+                --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_small.vcf.gz \
+                --output strat_new_ins_small \
+                --passonly \
+                --includebed ${INCLUDE_BED} \
+                --refdist 1000 \
+                --reference ${REFERENCE}
+            ## INS >= 10000
+            bcftools view --include 'SVTYPE = "INS" && SVLEN >= 10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz
+            bcftools view --include 'SVTYPE = "INS" && SVLEN >= 10000' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_large.vcf.gz
+            tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_large.vcf.gz
+            truvari bench \
+                --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz \
+                --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_large.vcf.gz \
+                --output strat_new_ins_large \
+                --passonly \
+                --includebed ${INCLUDE_BED} \
+                --refdist 1000 \
+                --reference ${REFERENCE}
         fi
-        cd strat
-        # SVTYPE
-        ## DEL
-        bcftools view --include 'SVTYPE = "DEL"' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL.vcf.gz
-        bcftools view --include 'SVTYPE = "DEL"' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL.vcf.gz
-        truvari bench \
-            --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL.vcf.gz \
-            --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL.vcf.gz \
-            --output strat_new_del \
-            --passonly \
-            --includebed ${INCLUDE_BED} \
-            --refdist 1000 \
-            --reference ${REFERENCE}
-        ## DEL < 10kb
-        bcftools view --include 'SVTYPE = "DEL" && SVLEN > -10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz
-        bcftools view --include 'SVTYPE = "DEL" && SVLEN > -10000' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_small.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_small.vcf.gz
-        truvari bench \
-            --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz \
-            --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_small.vcf.gz \
-            --output strat_new_del_small \
-            --passonly \
-            --includebed ${INCLUDE_BED} \
-            --refdist 1000 \
-            --reference ${REFERENCE}
-        ## DEL >= 10kb
-        bcftools view --include 'SVTYPE = "DEL" && SVLEN <= -10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz
-        bcftools view --include 'SVTYPE = "DEL" && SVLEN <= -10000' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_large.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_large.vcf.gz
-        truvari bench \
-            --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz \
-            --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_DEL_large.vcf.gz \
-            --output strat_new_del_large \
-            --passonly \
-            --includebed ${INCLUDE_BED} \
-            --refdist 1000 \
-            --reference ${REFERENCE}
-        ## INS
-        bcftools view --include 'SVTYPE = "INS"' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS.vcf.gz
-        bcftools view --include 'SVTYPE = "INS"' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS.vcf.gz
-        truvari bench \
-            --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS.vcf.gz \
-            --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS.vcf.gz \
-            --output strat_new_ins \
-            --passonly \
-            --includebed ${INCLUDE_BED} \
-            --refdist 1000 \
-            --reference ${REFERENCE}
-        ## INS < 10000
-        bcftools view --include 'SVTYPE = "INS" && SVLEN < 10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_small.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_small.vcf.gz
-        bcftools view --include 'SVTYPE = "INS" && SVLEN < 10000' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_small.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_small.vcf.gz
-        truvari bench \
-            --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_small.vcf.gz \
-            --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_small.vcf.gz \
-            --output strat_new_ins_small \
-            --passonly \
-            --includebed ${INCLUDE_BED} \
-            --refdist 1000 \
-            --reference ${REFERENCE}
-        ## INS >= 10000
-        bcftools view --include 'SVTYPE = "INS" && SVLEN >= 10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz
-        bcftools view --include 'SVTYPE = "INS" && SVLEN >= 10000' ${WORKDIR}/${INVCF_NEW} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_large.vcf.gz
-        tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_large.vcf.gz
-        truvari bench \
-            --base ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz \
-            --comp ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_2bench_NEW_INS_large.vcf.gz \
-            --output strat_new_ins_large \
-            --passonly \
-            --includebed ${INCLUDE_BED} \
-            --refdist 1000 \
-            --reference ${REFERENCE}
     fi
 fi

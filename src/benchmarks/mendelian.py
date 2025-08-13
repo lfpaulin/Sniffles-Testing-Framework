@@ -70,7 +70,7 @@ class TrioBench(object):
             os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'mend{self.args.snf2_old_ver}')
         if self.args.use_snf:
-            self.logger.debug(f'using SNF')
+            self.logger.debug(f'using SNF input')
             cmd = " ".join([
                 f'{self.src_path}/scripts/sniffles_mendelian_snf.sh',
                 self.args.snf2_old,
@@ -81,7 +81,7 @@ class TrioBench(object):
                 f'"{self.args.snf2_param_string}" '
             ])
         else:
-            self.logger.debug(f'using BAM')
+            self.logger.debug(f'using BAM input')
             cmd = " ".join([
                f'{self.src_path}/scripts/sniffles_mendelian.sh',
                self.args.snf2_old,
@@ -106,7 +106,7 @@ class TrioBench(object):
             os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'mend{self.args.snf2_new_ver}')
         if self.args.use_snf:
-            self.logger.info(f'Using SNF')
+            self.logger.info(f'Using SNF input')
             cmd = " ".join([
                 f'{self.src_path}/scripts/sniffles_mendelian_snf.sh',
                 self.args.snf2_new,
@@ -117,7 +117,7 @@ class TrioBench(object):
                 f'"{self.args.snf2_param_string}"'
             ])
         else:
-            self.logger.info(f'using BAM')
+            self.logger.info(f'using BAM input')
             cmd = " ".join([
                 f'{self.src_path}/scripts/sniffles_mendelian.sh',
                 self.args.snf2_new,
