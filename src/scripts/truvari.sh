@@ -35,7 +35,17 @@ truvari bench \
     --refdist 1000 \
     --reference ${REFERENCE}
 
+if [[ -d "${OUTPUT_OLD}_${BENCH}" ]];
+then
+    truvari refine \
+        --regions ${OUTPUT_OLD}_${BENCH}/candidate.refine.bed \
+        --coords R  \
+        --use-original-vcfs \
+        --align mafft \
+        ${OUTPUT_OLD}_${BENCH}
+fi
 
+cd ${WORKDIR}
 # Stratification
 DO_STRAT=$9
 if [[ "${DO_STRAT}" == "1" ]];
@@ -59,6 +69,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_OLD}_${BENCH}/strat/strat_old_del/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_OLD}_${BENCH}/strat/strat_old_del
         ## DEL < 10kb
         bcftools view --include 'SVTYPE = "DEL" && SVLEN > -10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_OLD}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_OLD}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz
@@ -72,6 +83,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_OLD}_${BENCH}/strat/strat_old_del_small/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_OLD}_${BENCH}/strat/strat_old_del_small
         ## DEL >= 10kb
         bcftools view --include 'SVTYPE = "DEL" && SVLEN <= -10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_OLD}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_OLD}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz
@@ -85,6 +97,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_OLD}_${BENCH}/strat/strat_old_del_large/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_OLD}_${BENCH}/strat/strat_old_del_large
         ## INS
         bcftools view --include 'SVTYPE = "INS"' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_OLD}_${BENCH}/strat/strat_truthset_INS.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_OLD}_${BENCH}/strat/strat_truthset_INS.vcf.gz
@@ -111,6 +124,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_OLD}_${BENCH}/strat/strat_old_ins_small/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_OLD}_${BENCH}/strat/strat_old_ins_small
         ## INS >= 10000
         bcftools view --include 'SVTYPE = "INS" && SVLEN >= 10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_OLD}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_OLD}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz
@@ -124,6 +138,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_OLD}_${BENCH}/strat/strat_old_ins_large/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_OLD}_${BENCH}/strat/strat_old_ins_large
     fi
 fi
 
@@ -139,6 +154,17 @@ then
         --includebed ${INCLUDE_BED} \
         --refdist 1000 \
         --reference ${REFERENCE}
+
+    if [[ -d "${OUTPUT_NEW}_${BENCH}" ]];
+    then
+        truvari refine \
+            --regions ${OUTPUT_NEW}_${BENCH}/candidate.refine.bed \
+            --coords R  \
+            --use-original-vcfs \
+            --align mafft \
+            ${OUTPUT_NEW}_${BENCH}
+    fi
+
     # Stratification
     if [[ -d "${OUTPUT_NEW}_${BENCH}" ]];
     then
@@ -162,6 +188,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_NEW}_${BENCH}/strat/strat_new_del/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_NEW}_${BENCH}/strat/strat_new_del
         ## DEL < 10kb
         bcftools view --include 'SVTYPE = "DEL" && SVLEN > -10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_small.vcf.gz
@@ -175,6 +202,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_NEW}_${BENCH}/strat/strat_new_del_small/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_NEW}_${BENCH}/strat/strat_new_del_small
         ## DEL >= 10kb
         bcftools view --include 'SVTYPE = "DEL" && SVLEN <= -10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_DEL_large.vcf.gz
@@ -188,6 +216,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_NEW}_${BENCH}/strat/strat_new_del_large/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_NEW}_${BENCH}/strat/strat_new_del_large
         ## INS
         bcftools view --include 'SVTYPE = "INS"' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS.vcf.gz
@@ -201,6 +230,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_NEW}_${BENCH}/strat/strat_new_ins/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_NEW}_${BENCH}/strat/strat_new_ins
         ## INS < 10000
         bcftools view --include 'SVTYPE = "INS" && SVLEN < 10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_small.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_small.vcf.gz
@@ -214,6 +244,7 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_NEW}_${BENCH}/strat/strat_new_ins_small/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_NEW}_${BENCH}/strat/strat_new_ins_small
         ## INS >= 10000
         bcftools view --include 'SVTYPE = "INS" && SVLEN >= 10000' ${THUTHSET_VCF} | bgzip -c > ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz
         tabix --preset vcf ${WORKDIR}/${OUTPUT_NEW}_${BENCH}/strat/strat_truthset_INS_large.vcf.gz
@@ -227,5 +258,6 @@ then
             --includebed ${INCLUDE_BED} \
             --refdist 1000 \
             --reference ${REFERENCE}
+        truvari refine --regions ${OUTPUT_NEW}_${BENCH}/strat/strat_new_ins_large/candidate.refine.bed --coords R --use-original-vcfs --align mafft ${OUTPUT_NEW}_${BENCH}/strat/strat_new_ins_large
     fi
 fi
