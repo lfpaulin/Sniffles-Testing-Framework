@@ -307,7 +307,7 @@ class HapMapMosaic(object):
         job.set_chdir(f'{self.args.dir_out}')
         if not os.path.exists(f'{self.args.dir_out}'):
             os.mkdir(f'{self.args.dir_out}')
-        job.set_jname(f'trvGIAB')
+        job.set_jname(f'trvMIMS')
         if self.args.skip_old and self.args.skip_new:
             self.logger.error(f'Both analysis have the "skip" option on... none has run.')
         elif self.args.skip_old:
