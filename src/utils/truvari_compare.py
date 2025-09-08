@@ -1,40 +1,64 @@
 #!/usr/bin/env python
+import os
+import sys
 import json
 import argparse
 
 
 # Version
-version = 'v0.1'
+version = 'v0.2'
 
 
 # Arguments
 def get_arguments():
     main_help = """
     truvari compare
-        -p/--prev    JSON file result of truvari prev version
-        -n/--new     JSON file result of truvari new version
+        -p/--prev    Direcorty of the benchamrk (truvari) from prev version
+        -n/--new     Direcorty of the benchamrk (truvari) from new version
+        -r/--refine  Flag that states use refine output
 
     """
     parser = argparse.ArgumentParser(
              description="Sniffles2 testing Framework: truvari compare",
              usage=main_help
     )
-    parser.add_argument('-p', '--prev', type=str, required=True, dest='json_prev', default="", help='')
-    parser.add_argument('-n', '--new', type=str, required=True, dest='json_new', default="", help='')
+    parser.add_argument('-p', '--prev', type=str, required=True, dest='bench_prev', default="", help='')
+    parser.add_argument('-n', '--new', type=str, required=True, dest='bench_new', default="", help='')
+    parser.add_argument('-r', '--refine', action="store_true", required=False, dest='refine', help='')
 
     args = parser.parse_args()
     return args, main_help
 
 
-info_needed_int = ("TP-comp", "FP", "FN")
-info_needed_float = ("precision", "recall", "f1", "gt_concordance")
-
 def main():
     params, _ = get_arguments()
-    compare(params.json_prev, params.json_new)
+    prev_file = get_bench(params.bench_prev, params.refine)
+    new_file = get_bench(params.bench_new, params.refine)
+    compare(prev_file, new_file, params.refine)
 
 
-def compare(snf_truvari_old, snf_truvari_new):
+def get_bench(bench_dir: str, use_refine: bool = False):
+    refine_bench = "refine.variant_summary.json"
+    default_bench = "summary.json"
+    if use_refine:
+        if refine_bench in os.listdir(bench_dir):
+            return f'{os.path.abspath(bench_dir)}/{refine_bench}'
+        else:
+            sys.stderr.write(f'[ERROR] required file {refine_bench} not found for "refine" benchmark comparison')
+            sys.exit(1)
+    if default_bench in os.listdir(bench_dir):
+            return f'{os.path.abspath(bench_dir)}/{default_bench}'
+    else:
+        sys.stderr.write(f'[ERROR] required file {default_bench} not found needed for benchmark comparison')
+        sys.exit(1)
+
+
+def compare(snf_truvari_old: str, snf_truvari_new: str, use_refine: bool = False):
+    # uses summary.json or refine.variant_summary.json
+    info_needed_int = ("TP-comp", "FP", "FN")
+    info_needed_float = ("precision", "recall", "f1", "gt_concordance")
+    if use_refine:
+        info_needed_float = info_needed_float[:-1]
     snf2_old = open(snf_truvari_old)
     snf2_new = open(snf_truvari_new)
     snf2_old_dict = json.load(snf2_old)

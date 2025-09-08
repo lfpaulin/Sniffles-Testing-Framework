@@ -31,7 +31,7 @@ truvari bench \
     --pctseq 0.7 --pctsize 0.7 \
     --base ${THUTHSET_VCF} \
     --comp ${WORKDIR}/${INVCF_OLD} \
-    --output ${OUTPUT_OLD}_${BENCH} \
+    --output bench_${OUTPUT_OLD} \
     --passonly \
     --includebed ${INCLUDE_BED} \
     --reference ${REFERENCE}
@@ -136,7 +136,7 @@ then
         --pctseq 0.7 --pctsize 0.7 \
         --base ${THUTHSET_VCF} \
         --comp ${WORKDIR}/${INVCF_NEW} \
-        --output ${OUTPUT_NEW}_${BENCH} \
+        --output bench_${OUTPUT_NEW} \
         --passonly \
         --includebed ${INCLUDE_BED} \
         --reference ${REFERENCE}

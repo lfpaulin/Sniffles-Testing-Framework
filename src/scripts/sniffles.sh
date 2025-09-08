@@ -39,3 +39,10 @@ ${SNF2_PATH} \
     --sample-id ${OUTPUT} \
     --dev-monitor-memory 30 \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}
+
+if [[ -f "${OUTPUT}_noqc.vcf.gz" ]]
+then
+    bcftools view --include "SUPPORT > 1 && (SVTYPE = 'INS' || SVTYPE = 'DEL')" \
+    ${OUTPUT}_noqc.vcf.gz | bgzip -c > ${OUTPUT}_noqc_FILT.vcf.gz
+    bcftools view --include "FILTER != 'PASS'" ${OUTPUT}_noqc_FILT.vcf.gz | bgzip -c > ${OUTPUT}_noqc_USE.vcf.gz
+fi
