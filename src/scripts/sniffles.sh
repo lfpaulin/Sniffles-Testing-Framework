@@ -35,6 +35,7 @@ ${SNF2_PATH} \
     --reference ${REFERENCE} \
     --minsvlen 50  \
     --output-rnames \
+    --mosaic-include-germline \
     --no-qc \
     --sample-id ${OUTPUT} \
     --dev-monitor-memory 30 \

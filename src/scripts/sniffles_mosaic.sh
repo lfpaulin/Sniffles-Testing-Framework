@@ -16,17 +16,17 @@ USE_TANDEM_REP=$5
 EXTRA_PARAM=$6
 NTASKS=8
 
-${SNF2_PATH} \
-    --input ${INPUT} \
-    --vcf ${OUTPUT}.vcf.gz \
-    --snf ${OUTPUT}.snf \
-    --threads ${NTASKS} \
-    --reference ${REFERENCE} \
-    --minsvlen 50  \
-    --output-rnames \
-    --sample-id ${OUTPUT} \
-    --dev-monitor-memory 30 \
-    ${USE_TANDEM_REP}  ${EXTRA_PARAM}
+#${SNF2_PATH} \
+#    --input ${INPUT} \
+#    --vcf ${OUTPUT}.vcf.gz \
+#    --snf ${OUTPUT}.snf \
+#    --threads ${NTASKS} \
+#    --reference ${REFERENCE} \
+#    --minsvlen 50  \
+#    --output-rnames \
+#    --sample-id ${OUTPUT} \
+#    --dev-monitor-memory 30 \
+#    ${USE_TANDEM_REP}  ${EXTRA_PARAM}
 
 ${SNF2_PATH} \
     --input ${INPUT} \
@@ -35,7 +35,9 @@ ${SNF2_PATH} \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
     --minsvlen 50  \
-    --mosaic \
+    --minsupport 3 \
+    --mosaic-af-min 0.01  \
+    --mosaic-include-germline \
     --output-rnames \
     --sample-id ${OUTPUT} \
     --dev-monitor-memory 30 \
@@ -47,6 +49,9 @@ ${SNF2_PATH} \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
     --minsvlen 50  \
+    --minsupport 3 \
+    --mosaic-af-min 0.01  \
+    --mosaic-include-germline \
     --output-rnames \
     --no-qc \
     --sample-id ${OUTPUT} \
