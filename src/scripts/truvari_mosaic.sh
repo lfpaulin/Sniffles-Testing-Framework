@@ -29,7 +29,6 @@ truvari bench \
     --pctseq 0.7 --pctsize 0.7 \
     --base ${THUTHSET_VCF} \
     --comp ${WORKDIR}/${INVCF_OLD} \
-
     --passonly \
     --includebed ${INCLUDE_BED} \
     --reference ${REFERENCE}

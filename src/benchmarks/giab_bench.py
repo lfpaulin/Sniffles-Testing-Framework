@@ -322,7 +322,7 @@ class HapMapMosaic(object):
         # truvari command
         self.logger.info(f'Running SMaHT HapMap (mosaic)')
         cmd = " ".join([
-            f'{self.src_path}/scripts/truvari.sh', 
+            f'{self.src_path}/scripts/truvari_mosaic.sh',
             f'{self.args.output}_{self.args.snf2_old_ver}.vcf.gz',
             f'{self.args.output}_{self.args.snf2_old_ver}_bench',
             f'{self.args.output}_{self.args.snf2_new_ver}.vcf.gz',
