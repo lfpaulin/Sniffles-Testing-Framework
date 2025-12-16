@@ -25,10 +25,12 @@ class TrioBenchParam(object):
         self.skip_old = None
         self.skip_new = None
 
-    def set_parameters_from_json(self, json_dict, base_dir, data_dir, reference):
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir, reference, snf2_pub, snf2_dev):
         self.base_dir = base_dir
         self.data_dir = data_dir
         self.reference = reference
+        self.snf2_old = snf2_pub
+        self.snf2_new = snf2_dev
         self.proband = f'{data_dir}/{json_dict["proband"]}'
         self.father = f'{data_dir}/{json_dict["father"]}'
         self.mother = f'{data_dir}/{json_dict["mother"]}'
@@ -37,8 +39,6 @@ class TrioBenchParam(object):
         self.dir_out = f'{base_dir}/{json_dict["directory"]}'
         self.output = json_dict["output"]
         self.tandem_rep = json_dict["tandem_repeat"]
-        self.snf2_old = json_dict["snf_current"]
-        self.snf2_new = json_dict["snf_new"]
         self.snf2_old_ver = json_dict["snf_current_ver"]
         self.snf2_new_ver = json_dict["snf_new_ver"]
         self.snf2_param = json_dict["extra_param"]

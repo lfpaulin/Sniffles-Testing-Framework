@@ -12,3 +12,4 @@ src/scripts/to_add_bench.json
 src/scripts/Untitled-1.r
 .idea/
 .idea/*
+bench_snf2_local.json

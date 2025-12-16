@@ -25,7 +25,7 @@ ${SNF2_PATH} \
     --minsvlen 50  \
     --output-rnames \
     --sample-id ${OUTPUT} \
-    --dev-monitor-memory 30 \
+    --dev-monitor-memory 1 \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}
 
 ${SNF2_PATH} \
@@ -38,12 +38,12 @@ ${SNF2_PATH} \
     --mosaic-include-germline \
     --no-qc \
     --sample-id ${OUTPUT} \
-    --dev-monitor-memory 30 \
+    --dev-monitor-memory 1 \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}
 
 if [[ -f "${OUTPUT}_noqc.vcf.gz" ]]
 then
-    bcftools view --include "SUPPORT > 1 && (SVTYPE = 'INS' || SVTYPE = 'DEL')" \
+    bcftools view --include "SUPPORT > 1 && (SVTYPE = 'INS' || SVTYPE = 'DEL') && (SVLEN <= 50000 && SVLEN >= -50000)" \
     ${OUTPUT}_noqc.vcf.gz | bgzip -c > ${OUTPUT}_noqc_FILT.vcf.gz
     bcftools view --include "FILTER != 'PASS'" ${OUTPUT}_noqc_FILT.vcf.gz | bgzip -c > ${OUTPUT}_noqc_USE.vcf.gz
 fi

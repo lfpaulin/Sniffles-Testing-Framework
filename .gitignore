@@ -166,6 +166,7 @@ json_bcm
 json_bcm/*
 snf2_bench.json
 bench_snf2.json
+bench_snf2_local.json
 snf2_bench_v207.json
 to_add_bench.json
 src/scripts/Untitled-1.r

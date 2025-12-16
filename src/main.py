@@ -28,7 +28,8 @@ def giab_bench(user_args):
     giab_params = GIABBenchParam()
     params_json = json.load(open(user_args.json, "r"))
     bdir, data_dir, ref = params_json["base_dir"], params_json["data_dir"], params_json["reference"]
-    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38_5khz"], bdir, data_dir, ref)
+    snf2_pub, snf2_dev = params_json["snf2_pub"], params_json["snf2_dev"]
+    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38_5khz"], bdir, data_dir, ref, snf2_pub, snf2_dev)
     # benchmark
     giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_bench.bench()
@@ -41,7 +42,8 @@ def trio_bench(user_args):
     trio_params = TrioBenchParam()
     params_json = json.load(open(user_args.json, "r"))
     bdir, data_dir, ref = params_json["base_dir"], params_json["data_dir"], params_json["reference"]
-    trio_params.set_parameters_from_json(params_json["mendelian_ont"], bdir, data_dir, ref)
+    snf2_pub, snf2_dev = params_json["snf2_pub"], params_json["snf2_dev"]
+    trio_params.set_parameters_from_json(params_json["mendelian_ont"], bdir, data_dir, ref, snf2_pub, snf2_dev)
     # benchmark
     triosv_bench = TrioBench(trio_params, bench_id, FRAMEWORK_SRC_PATH)
     triosv_bench.bench()
@@ -54,7 +56,8 @@ def combine_bench(user_args):
     merge_params = MergeTestParam()
     params_json = json.load(open(user_args.json, "r"))
     bdir, data_dir, ref = params_json["base_dir"], params_json["data_dir"], params_json["reference"]
-    merge_params.set_parameters_from_json(params_json["merge"], bdir, data_dir, ref)
+    snf2_pub, snf2_dev = params_json["snf2_pub"], params_json["snf2_dev"]
+    merge_params.set_parameters_from_json(params_json["merge"], bdir, data_dir, ref, snf2_pub, snf2_dev)
     # benchmark
     merge_bench = MergeBench(merge_params, bench_id, FRAMEWORK_SRC_PATH)
     merge_bench.bench()
@@ -67,7 +70,8 @@ def mosaic_bench(user_args):
     mosaic_params = GIABBenchParam()
     params_json = json.load(open(user_args.json, "r"))
     bdir, data_dir, ref = params_json["base_dir"], params_json["data_dir"], params_json["reference"]
-    mosaic_params.set_parameters_from_json(params_json["mosaic"], bdir, data_dir, ref)
+    snf2_pub, snf2_dev = params_json["snf2_pub"], params_json["snf2_dev"]
+    mosaic_params.set_parameters_from_json(params_json["mosaic"], bdir, data_dir, ref, snf2_pub, snf2_dev)
     # benchmark
     mosaicsv_bench = GIABBench(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
     mosaicsv_bench.bench()
@@ -80,7 +84,8 @@ def population_bench(user_args):
     pop_merge_params = PopMergeTestParam()
     params_json = json.load(open(user_args.json, "r"))
     bdir, data_dir, ref = params_json["base_dir"], params_json["data_dir"], params_json["reference"]
-    pop_merge_params.set_parameters_from_json(params_json)
+    snf2_pub, snf2_dev = params_json["snf2_pub"], params_json["snf2_dev"]
+    pop_merge_params.set_parameters_from_json(params_json, "", "")
     # benchmark
     pop_bench = MergeXLBench(pop_merge_params, bench_id, FRAMEWORK_SRC_PATH)
     pop_bench.bench()
@@ -92,58 +97,73 @@ def full_bench(user_args):
     bench_id = generate_id.make_id()
     params_json = json.load(open(user_args.json, "r"))
     base_dir, data_dir, ref = params_json["base_dir"], params_json["data_dir"], params_json["reference"]
+    snf2_pub, snf2_dev = params_json["snf2_pub"], params_json["snf2_dev"]
     # NOTE: GIAB ONT hg38 5khz
     my_logger.info("GIAB ONT hg38 5khz")
     giab_params = GIABBenchParam()
-    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38_5khz"], base_dir, data_dir, ref)
+    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38_5khz"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_bench.bench()
     time.sleep(2)
     # NOTE: GIAB ONT hg38
     my_logger.info("GIAB ONT hg38")
     giab_params = GIABBenchParam()
-    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38"], base_dir, data_dir, ref)
+    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
+    giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
+    giabsv_bench.bench()
+    time.sleep(2)
+    # NOTE: GIAB ONT hg38 low
+    my_logger.info("GIAB ONT hg38 low coverage")
+    giab_params = GIABBenchParam()
+    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38_low"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_bench.bench()
     time.sleep(2)
     # NOTE: GIAB HiFi hg38
     my_logger.info("GIAB HiFI hg38")
     giab_hifi_params = GIABBenchParam()
-    giab_hifi_params.set_parameters_from_json(params_json["hg002_hifi_hg38"], base_dir, data_dir, ref)
+    giab_hifi_params.set_parameters_from_json(params_json["hg002_hifi_hg38"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
+    giabsv_hifi_bench = GIABBench(giab_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
+    giabsv_hifi_bench.bench()
+    time.sleep(2)
+    # NOTE: GIAB HiFi hg38 low
+    my_logger.info("GIAB HiFI hg38 low coverage")
+    giab_hifi_params = GIABBenchParam()
+    giab_hifi_params.set_parameters_from_json(params_json["hg002_hifi_hg38_low"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     giabsv_hifi_bench = GIABBench(giab_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
     giabsv_hifi_bench.bench()
     time.sleep(2)
     # NOTE: Mendelian
     my_logger.info("Mendelian")
     trio_params = TrioBenchParam()
-    trio_params.set_parameters_from_json(params_json["mendelian_ont"], base_dir, data_dir, ref)
+    trio_params.set_parameters_from_json(params_json["mendelian_ont"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     triosv_bench = TrioBench(trio_params, bench_id, FRAMEWORK_SRC_PATH)
     triosv_bench.bench()
     time.sleep(2)
     # NOTE: Mendelian HiFi
     my_logger.info("Mendelian HiFi")
     trio_hifi_params = TrioBenchParam()
-    trio_hifi_params.set_parameters_from_json(params_json["mendelian_hifi"], base_dir, data_dir, ref)
+    trio_hifi_params.set_parameters_from_json(params_json["mendelian_hifi"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     triosv_hifi_bench = TrioBench(trio_hifi_params, bench_id, FRAMEWORK_SRC_PATH)
     triosv_hifi_bench.bench()
     time.sleep(2)
     # NOTE: Merge
     my_logger.info("Merge")
     merge_params = MergeTestParam()
-    merge_params.set_parameters_from_json(params_json["merge"], base_dir, data_dir, ref)
+    merge_params.set_parameters_from_json(params_json["merge"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     merge_bench = MergeBench(merge_params, bench_id, FRAMEWORK_SRC_PATH)
     merge_bench.bench()
     time.sleep(2)
     # NOTE: Mosaic => use HapMap
     my_logger.info("Mosaic => use HapMap")
     mosaic_params = GIABBenchParam()
-    mosaic_params.set_parameters_from_json(params_json["mosaic"], base_dir, data_dir, ref)
+    mosaic_params.set_parameters_from_json(params_json["mosaic"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     mosaicsv_bench = HapMapMosaic(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
     mosaicsv_bench.bench()
     # NOTE: BNDs => we sue HG008
     my_logger.info("BNDs => we sue HG008")
     bnds_params = GIABBenchParam()
-    bnds_params.set_parameters_from_json(params_json["bnds"], base_dir, data_dir, ref)
+    bnds_params.set_parameters_from_json(params_json["bnds"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     bnds_bench = GIABBND(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
     bnds_bench.bench()
     # NOTE: Severus
@@ -153,7 +173,7 @@ def full_bench(user_args):
     # TODO: update
     my_logger.warning("large events missing")
     # ont_large_deldup_params = ONTLargeDelDupParams()
-    # ont_large_deldup_params.set_parameters_from_json(params_json["large_deldup_ont_colo"], base_dir, data_dir, ref)
+    # ont_large_deldup_params.set_parameters_from_json(params_json["large_deldup_ont_colo"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     # ont_large_deldup_bench = ONTLargeDelDup(ont_large_deldup_params, bench_id, FRAMEWORK_SRC_PATH)
     # ont_large_deldup_bench.bench()
     # NOTE: Genotyper # TODO: update BAM
