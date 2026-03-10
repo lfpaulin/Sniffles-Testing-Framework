@@ -160,18 +160,18 @@ def full_bench(user_args):
     mosaic_params.set_parameters_from_json(params_json["mosaic"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     mosaicsv_bench = HapMapMosaic(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
     mosaicsv_bench.bench()
-    # NOTE: BNDs => we sue HG008
-    my_logger.info("BNDs => we sue HG008")
-    bnds_params = GIABBenchParam()
-    bnds_params.set_parameters_from_json(params_json["bnds"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
-    bnds_bench = GIABBND(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
-    bnds_bench.bench()
-    # NOTE: Severus
-    my_logger.info("Severus in HG002 (ONT + PB) and HapMap")
-    # TODO: implement
-    # NOTE: ONT specific
-    # TODO: update
-    my_logger.warning("large events missing")
+    # NOTE: BNDs => we use HG008
+    # my_logger.info("BNDs => we sue HG008")
+    # bnds_params = GIABBenchParam()
+    # bnds_params.set_parameters_from_json(params_json["bnds"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
+    # bnds_bench = GIABBND(mosaic_params, bench_id, FRAMEWORK_SRC_PATH)
+    # bnds_bench.bench()
+    # # NOTE: Severus
+    # my_logger.info("Severus in HG002 (ONT + PB) and HapMap")
+    # # TODO: implement
+    # # NOTE: ONT specific
+    # # TODO: update
+    # my_logger.warning("large events missing")
     # ont_large_deldup_params = ONTLargeDelDupParams()
     # ont_large_deldup_params.set_parameters_from_json(params_json["large_deldup_ont_colo"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
     # ont_large_deldup_bench = ONTLargeDelDup(ont_large_deldup_params, bench_id, FRAMEWORK_SRC_PATH)

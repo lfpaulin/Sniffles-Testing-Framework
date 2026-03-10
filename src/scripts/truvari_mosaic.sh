@@ -3,7 +3,7 @@
 #SBATCH --mem=4Gb
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=medium
-#SBATCH --account=proj-fs0002
+#SBATCH --account=proj-fs0007
 
 . /stornext/snfs130/fritz/luis/miniconda3_py310_24_3/etc/profile.d/conda.sh
 conda activate truvari
@@ -133,7 +133,6 @@ then
         --pctseq 0.7 --pctsize 0.7 \
         --base ${THUTHSET_VCF} \
         --comp ${WORKDIR}/${INVCF_NEW} \
-
         --passonly \
         --includebed ${INCLUDE_BED} \
         --reference ${REFERENCE}

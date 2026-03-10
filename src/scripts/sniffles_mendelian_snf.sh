@@ -3,7 +3,7 @@
 #SBATCH --mem=16gb
 #SBATCH --time=3-00:00:00
 #SBATCH --partition=medium
-#SBATCH --account=proj-fs0002
+#SBATCH --account=proj-fs0007
 
 . /stornext/snfs130/fritz/luis/miniconda3_py310_24_3/etc/profile.d/conda.sh
 conda activate snf2dev
