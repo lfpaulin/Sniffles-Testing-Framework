@@ -25,13 +25,14 @@ WORKDIR=$PWD
 echo "INFO: ${WORKDIR}"
 # OLD
 truvari bench \
-    --pick single \
-    --pctseq 0.7 --pctsize 0.7 \
     --base ${THUTHSET_VCF} \
     --comp ${WORKDIR}/${INVCF_OLD} \
-    --passonly \
     --includebed ${INCLUDE_BED} \
-    --reference ${REFERENCE}
+    --reference ${REFERENCE} \
+    --output bench_${OUTPUT_OLD} \
+    --pctseq 0.7 --pctsize 0.7 \
+    --passonly \
+    --pick single
 
 # Stratification
 DO_STRAT="0"
@@ -129,13 +130,14 @@ if [[ "${INVCF_NEW}" != "none" ]]
 then
     # NEW
     truvari bench \
-        --pick single \
-        --pctseq 0.7 --pctsize 0.7 \
         --base ${THUTHSET_VCF} \
         --comp ${WORKDIR}/${INVCF_NEW} \
-        --passonly \
         --includebed ${INCLUDE_BED} \
-        --reference ${REFERENCE}
+        --reference ${REFERENCE} \
+        --output bench_${OUTPUT_NEW} \
+        --pick single \
+        --passonly \
+        --pctseq 0.7 --pctsize 0.7
 
     if [[ "${DO_STRAT}" == "1" ]];
     then
