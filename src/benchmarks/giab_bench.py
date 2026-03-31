@@ -8,24 +8,24 @@ from utils.logger import setup_log
 
 class GIABBenchParam(object):
     def __init__(self):
-        self.base_dir = None
-        self.data_dir = None
-        self.bam = None
-        self.dir_out = None
-        self.output = None
-        self.reference = None
-        self.tandem_rep = None
-        self.snf2_old = None
-        self.snf2_new = None
-        self.snf2_old_ver = None
-        self.snf2_new_ver = None
+        self.base_dir = ""
+        self.data_dir = ""
+        self.bam = ""
+        self.dir_out = ""
+        self.output = ""
+        self.reference = ""
+        self.tandem_rep = ""
+        self.snf2_old = ""
+        self.snf2_new = ""
+        self.snf2_old_ver = ""
+        self.snf2_new_ver = ""
         self.snf2_param = ""
-        self.snf2_param_string = None
-        self.truvari = None
-        self.truvari_version = None
-        self.skip_old = None
-        self.skip_new = None
-        self.truvari2 = None
+        self.snf2_param_string = ""
+        self.truvari = ""
+        self.truvari_version = ""
+        self.skip_old = ""
+        self.skip_new = ""
+        self.truvari2 = ""
 
     def set_parameters_from_json(self, json_dict, base_dir, data_dir, reference, snf2_pub, snf2_dev):
         self.base_dir = base_dir
@@ -59,7 +59,7 @@ class GIABBenchParam(object):
 
 
 class GIABBench(object):
-    def __init__(self, bench_args, bench_id, src_path):
+    def __init__(self, bench_args: GIABBenchParam, bench_id, src_path):
         self.args = bench_args
         self.id = bench_id
         self.src_path = src_path
@@ -176,7 +176,7 @@ class GIABBench(object):
 
 
 class GIABBND(object):
-    def __init__(self, bench_args, bench_id, src_path):
+    def __init__(self, bench_args: GIABBenchParam, bench_id, src_path):
         self.args = bench_args
         self.id = bench_id
         self.src_path = src_path
@@ -262,7 +262,7 @@ class GIABBND(object):
 
 
 class HapMapMosaic(object):
-    def __init__(self, bench_args, bench_id, src_path):
+    def __init__(self, bench_args: GIABBenchParam, bench_id, src_path):
         self.args = bench_args
         self.id = bench_id
         self.src_path = src_path
@@ -344,3 +344,87 @@ class HapMapMosaic(object):
             sniffles_new = self.sniffles_run("new")
         if sniffles_new is not None or sniffles_new is not None:
             self.compare(sniffles_current, sniffles_new, "Mosaic")
+
+
+class SeverusParam(object):
+    def __init__(self):
+        self.bam_ont = ""
+        self.bam_pb = ""
+        self.directory = ""
+        self.tandem_repeat = ""
+        self.truvari = ""
+        self.skip_step = ""
+        self.version = ""
+
+    def set_parameters_from_json(self, json_dict, base_dir, data_dir, reference):
+        self.base_dir = base_dir
+        self.data_dir = data_dir
+        self.reference = reference        
+        self.bam_ont = f'{self.data_dir}/{json_dict["bam_ont"]}'
+        self.bam_pb = f'{self.data_dir}/{json_dict["bam_pb"]}'
+        self.directory = f'{self.base_dir}/{json_dict["directory"]}'
+        self.tandem_repeat = json_dict["tandem_repeat"]
+        self.truvari = self.set_truvari(f'{self.data_dir}/{json_dict["truvari"]}')
+        self.truvari["bench"] = "giabsv_hg38_v1"
+        self.skip_step = bool(json_dict["skip_step"])
+        self.version = json_dict["version"]
+
+    @staticmethod
+    def set_truvari(json_file):
+        return json.load(open(json_file, "r"))
+
+
+
+class SeverusBench(object):
+    def __init__(self, bench_args: SeverusParam, bench_id, src_path):
+        self.args = bench_args
+        self.id = bench_id
+        self.src_path = src_path
+        self.logger = setup_log(__name__, True)
+    
+    def severus_run(self, version: str):
+        self.logger.info(f"Severus, assumed to be in $PATH")
+        job = jobs_slurm.SubmitJobsSlurm()
+        job.set_output(f'log_{self.id}_sev.out')
+        job.set_error(f'log_{self.id}_sev.err')
+        job.set_chdir(f'{self.args.directory}')
+        job.set_jname(f'callSev')
+        cmd = " ".join([
+            f'{self.src_path}/scripts/severus.sh',
+            self.args.tandem_repeat,
+            self.args.bam_ont,
+            self.args.bam_pb
+        ])
+        job.make(cmd)
+        job.submit()
+        return job
+
+    def compare(self, severus_sv_run, bench_name=""):
+        self.logger.info(f'Severus bench: {bench_name}')
+        job = jobs_slurm.SubmitJobsSlurm()
+        job.set_output(f'log_{self.id}_severus_bench_giab.out')
+        job.set_error(f'log_{self.id}_severus_bench_giab.err')
+        job.set_chdir(f'{self.args.directory}')
+        job.set_jname(f'trvGIAB')
+        # truvari command
+        self.logger.info(f'Running GIAB SV-bench Q100')
+        cmd = " ".join([
+            f'{self.src_path}/scripts/truvari.sh', 
+            f'{self.args.directory}/ont/all_SVs/severus_all.vcf.gz',
+            f'severus_bench_ont',
+            f'{self.args.directory}/pb/all_SVs/severus_all.vcf.gz',
+            f'severus_bench_pb',
+            self.args.truvari["vcf"],
+            self.args.truvari["bed"],
+            self.args.reference,
+            self.args.truvari["bench"], "1"
+        ])
+        job.make(cmd)
+        job.submit()
+
+    def bench(self):
+        if self.args.skip_step:
+            return None
+        severus_sv = self.severus_run(self.args.version)
+        if severus_sv is not None:
+            self.compare(severus_sv, "GIAB")

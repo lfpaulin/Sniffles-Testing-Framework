@@ -14,25 +14,22 @@ conda activate severus_env
 # self.args_pb.bam
 
 TANDEM_REP=$1
-PON_FILE=$2
-BAM_ONT=$3
-BAM_PB=$4
+BAM_ONT=$2
+BAM_PB=$3
 NTASKS=8
 
 # ont
-severus \
+gnu-time --verbose --output time_ont.log severus \
     --target-bam ${BAM_ONT} \
     --out-dir ont \
     --vntr-bed  ${TANDEM_REP} \
     --threads ${NTASKS}  \
-    --PON ${PON_FILE}
-    # --phasing-vcf phased.vcf \
+    --phasing-vcf phased.vcf \
 
 # pb
-severus \
+gnu-time --verbose --output time_pb.log severus \
     --target-bam ${BAM_PB} \
     --out-dir pb \
     --vntr-bed  ${TANDEM_REP} \
     --threads ${NTASKS}  \
-    --PON ${PON_FILE}
-    # --phasing-vcf phased.vcf \
+    --phasing-vcf phased.vcf \
