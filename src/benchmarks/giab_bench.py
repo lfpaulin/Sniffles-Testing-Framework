@@ -388,6 +388,9 @@ class SeverusBench(object):
         job.set_output(f'log_{self.id}_sev.out')
         job.set_error(f'log_{self.id}_sev.err')
         job.set_chdir(f'{self.args.directory}')
+        job.set_chdir(f'{self.args.directory}')
+        if not os.path.exists(f'{self.args.directory}'):
+            os.mkdir(f'{self.args.directory}')
         job.set_jname(f'callSev')
         cmd = " ".join([
             f'{self.src_path}/scripts/severus.sh',
@@ -405,6 +408,7 @@ class SeverusBench(object):
         job.set_output(f'log_{self.id}_severus_bench_giab.out')
         job.set_error(f'log_{self.id}_severus_bench_giab.err')
         job.set_chdir(f'{self.args.directory}')
+        job.set_dependencies(f'afterok:{severus_sv_run.job_id}')
         job.set_jname(f'trvGIAB')
         # truvari command
         self.logger.info(f'Running GIAB SV-bench Q100')

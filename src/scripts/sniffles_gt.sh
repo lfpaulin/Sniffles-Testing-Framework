@@ -20,6 +20,7 @@ ${SNF2_PATH} \
     --genotype-vcf ${VCF_IN} \
     --vcf ${OUTPUT}.vcf.gz \
     --threads ${NTASKS} \
+    --phase \
     --reference ${REFERENCE} \
     --minsvlen 50  \
     --sample-id ${OUTPUT}

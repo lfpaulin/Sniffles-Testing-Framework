@@ -35,6 +35,7 @@ ${SNF2_PATH} \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
     --minsvlen 50  \
+    --phase \
     --minsupport 3 \
     --mosaic-af-min 0.01  \
     --mosaic-include-germline \
@@ -49,6 +50,7 @@ ${SNF2_PATH} \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
     --minsvlen 50  \
+    --phase \
     --minsupport 3 \
     --mosaic-af-min 0.01  \
     --mosaic-include-germline \

@@ -22,6 +22,7 @@ ${SNF2_PATH} \
     --snf ${OUTPUT}_threads_${NTASKS}.snf \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
+    --phase \
     --minsvlen 50  \
     --sample-id ${OUTPUT} \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}
@@ -36,6 +37,7 @@ ${SNF2_PATH} \
     --snf ${OUTPUT}_threads_${NTASKS}.snf \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
+    --phase \
     --minsvlen 50  \
     --sample-id ${OUTPUT} \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}
@@ -51,6 +53,7 @@ ${SNF2_PATH} \
     --snf ${OUTPUT}_threads_${NTASKS}.snf \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
+    --phase \
     --minsvlen 50  \
     --sample-id ${OUTPUT} \
     ${USE_TANDEM_REP}  ${EXTRA_PARAM}

@@ -32,6 +32,7 @@ ${SNF2_PATH} \
     --input ${SNF_TSV_LIST} \
     --vcf ${OUTPUT}.vcf.gz \
     --minsvlen 50 \
+    --phase \
     --reference ${REFERENCE} \
     --threads ${NTASKS}
 

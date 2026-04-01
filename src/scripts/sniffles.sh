@@ -23,6 +23,7 @@ ${SNF2_PATH} \
     --threads ${NTASKS} \
     --reference ${REFERENCE} \
     --minsvlen 50  \
+    --phase \
     --output-rnames \
     --sample-id ${OUTPUT} \
     --dev-monitor-memory 1 \
@@ -36,6 +37,7 @@ ${SNF2_PATH} \
     --minsvlen 50  \
     --output-rnames \
     --mosaic-include-germline \
+    --phase \
     --no-qc \
     --sample-id ${OUTPUT} \
     --dev-monitor-memory 1 \

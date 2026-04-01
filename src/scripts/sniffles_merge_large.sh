@@ -20,6 +20,7 @@ python ${SNF2_PATH} \
     --input "${INPUT_FILE_TSV}" \
     --vcf ${OUTPUT}.vcf \
     --minsvlen 50 \
+    --phase \
     --reference ${REFERENCE} \
     --threads ${NTASKS} \
     --no-sort
