@@ -40,6 +40,7 @@ do
         --threads ${NTASKS} \
         --reference ${REFERENCE} \
         --minsvlen 50  \
+        --phase \
         --sample-id ${bamid} \
         --snf ${OUTPUT}_${bamid}.snf \
         ${USE_TANDEM_REP}  ${EXTRA_PARAM}
@@ -54,6 +55,7 @@ ${SNF2_PATH} \
     --vcf ${OUTPUT}.vcf.gz \
     --minsvlen 50 \
     --reference ${REFERENCE} \
+    --phase \
     --threads ${NTASKS}
 
 # bcftools mendelian
