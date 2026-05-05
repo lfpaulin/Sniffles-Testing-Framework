@@ -67,7 +67,7 @@ def main():
                 svlen = sv.info.get("SVLEN") if svtype != "BND" else schr2
                 _, tmpgt = sv.samples.items().pop()
                 sgt = tmpgt.get("GT")
-                shp, _, _, _, shpf, _  = sv.info.get("PHASE")
+                shp, _, _, _, shpf, _ = sv.info.get("PHASE")
 
                 # skip hets different hap
                 if sgt in HETS and cgt in HETS:
@@ -87,8 +87,8 @@ def main():
                     if chp != shp and "FAIL" in {chpf, shpf}:
                         continue
                 
-                collition_type = "SAME" if svtype == csvtype else "DIFF"
-                print(f'{collition_type}:', f'{contig}:{pos}', (curr.id, cgt, csvlen, chp, chpf), (sv.id, sgt, svlen, shp, shpf))
+                collision_type = "SAME" if svtype == csvtype else "DIFF"
+                print(f'{collision_type}:', f'{contig}:{pos}', (curr.id, cgt, csvlen, chp, chpf), (sv.id, sgt, svlen, shp, shpf))
             curr = sv
 
     vcf.close()

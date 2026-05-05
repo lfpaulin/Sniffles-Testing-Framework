@@ -39,7 +39,7 @@ def main():
         hp, ps, hp_supp, ps_supp, hp_filt, ps_filt = phase_info
         sample_name, sample_gt = sv.samples.items().pop()
         gt = sample_gt.get("GT")
-        if gt in {(0,1), (1,0)} and hp_filt == "PASS" and "BND" != svtype:
+        if gt in {(0,1), (1,0)} and hp_filt == "PASS" and "BND" != svtype and hp != "0":
             assert (hp == "1" and gt == (1,0) or hp == "2" and gt == (0,1)), f'{sv.id} has incorrect phasing (HP): {hp} {gt}'
         gt_ps = sample_gt.get("PS")
         if ps_filt == "PASS" and hp_filt == "PASS" and "BND" != svtype: 

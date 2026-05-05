@@ -5,7 +5,7 @@
 #SBATCH --partition=medium
 #SBATCH --account=proj-fs0007
 
-. /stornext/snfs130/fritz/luis/miniconda3_py310_24_3/etc/profile.d/conda.sh
+. /stornext/snfs210/fritz/luis/miniconda3_py313_26_322/etc/profile.d/conda.sh
 conda activate snf2dev
 
 # sniffles2

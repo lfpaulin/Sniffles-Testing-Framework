@@ -98,13 +98,6 @@ def full_bench(user_args):
     params_json = json.load(open(user_args.json, "r"))
     base_dir, data_dir, ref = params_json["base_dir"], params_json["data_dir"], params_json["reference"]
     snf2_pub, snf2_dev = params_json["snf2_pub"], params_json["snf2_dev"]
-    # NOTE: GIAB ONT hg38 5khz
-    my_logger.info("GIAB ONT hg38 5khz")
-    giab_params = GIABBenchParam()
-    giab_params.set_parameters_from_json(params_json["hg002_ont_hg38_5khz"], base_dir, data_dir, ref, snf2_pub, snf2_dev)
-    giabsv_bench = GIABBench(giab_params, bench_id, FRAMEWORK_SRC_PATH)
-    giabsv_bench.bench()
-    time.sleep(2)
     # NOTE: GIAB ONT hg38
     my_logger.info("GIAB ONT hg38")
     giab_params = GIABBenchParam()
