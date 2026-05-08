@@ -363,7 +363,7 @@ class SeverusParam(object):
         self.bam_ont = f'{self.data_dir}/{json_dict["bam_ont"]}'
         self.bam_pb = f'{self.data_dir}/{json_dict["bam_pb"]}'
         self.directory = f'{self.base_dir}/{json_dict["directory"]}'
-        self.tandem_repeat = json_dict["tandem_repeat"]
+        self.tandem_repeat = f'{self.data_dir}/{json_dict["tandem_repeat"]}'
         self.truvari = self.set_truvari(f'{self.data_dir}/{json_dict["truvari"]}')
         self.truvari["bench"] = "giabsv_hg38_v1"
         self.skip_step = bool(json_dict["skip_step"])

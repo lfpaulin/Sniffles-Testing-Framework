@@ -10,7 +10,8 @@ class SubmitJobsSlurm(object):
         self.error = ""
         self.chdir = ""
         self.jname = ""
-        self.params = ""
+        # self.params = "--nodelist c81o-[01-24]"
+        self.params = "--exclude c81n-[33-36,38-44]"
         self.log_job_id = ""
         self.job_id = None
         self.dependencies = ""
@@ -30,7 +31,7 @@ class SubmitJobsSlurm(object):
         self.jname = this_jname
 
     def set_params(self, this_params):
-        self.params = this_params
+        self.params = f'{self.params}  {this_params}'
 
     def set_job_id(self, this_job_id):
         self.job_id = this_job_id

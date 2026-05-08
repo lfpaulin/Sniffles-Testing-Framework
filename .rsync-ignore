@@ -13,3 +13,4 @@ src/scripts/Untitled-1.r
 .idea/
 .idea/*
 bench_snf2_local.json
+deploy_clusterm.sh
