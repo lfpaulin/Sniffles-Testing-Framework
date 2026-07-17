@@ -21,11 +21,12 @@ class GIABBenchParam(object):
         self.snf2_new_ver = ""
         self.snf2_param = ""
         self.snf2_param_string = ""
-        self.truvari = ""
+        self.truvari = {}
         self.truvari_version = ""
         self.skip_old = ""
         self.skip_new = ""
-        self.truvari2 = ""
+        self.run_cmrg = False
+        self.truvari2 = {}
 
     def set_parameters_from_json(self, json_dict, base_dir, data_dir, reference, snf2_pub, snf2_dev):
         self.base_dir = base_dir
@@ -45,7 +46,9 @@ class GIABBenchParam(object):
         self.truvari_version = self.truvari["version"]
         self.skip_old = bool(json_dict["skip_old"])
         self.skip_new = bool(json_dict["skip_new"])
-        self.truvari2 = self.set_truvari(f'{self.data_dir}/{json_dict["truvari2"]}') if json_dict["truvari2"] != "" else None
+        if json_dict["truvari2"] != "":
+            self.run_cmrg = True
+            self.truvari2 = self.set_truvari(f'{self.data_dir}/{json_dict["truvari2"]}')
 
     def extra_param_string(self):
         if len(self.snf2_param) > 0:
@@ -59,7 +62,7 @@ class GIABBenchParam(object):
 
 
 class GIABBench(object):
-    def __init__(self, bench_args: GIABBenchParam, bench_id, src_path):
+    def __init__(self, bench_args: GIABBenchParam, bench_id: str, src_path: str):
         self.args = bench_args
         self.id = bench_id
         self.src_path = src_path
@@ -96,15 +99,15 @@ class GIABBench(object):
         job.submit()
         return job
 
-    def compare(self, old, new, bench_name=""):
+    def compare(self, old, new, bench_name, bench_log, vcf, bed, bench, statify = "0"):
         self.logger.info(f'Sniffles2 bench compare: {bench_name}')
         job = jobs_slurm.SubmitJobsSlurm()
-        job.set_output(f'log_{self.id}_snf2_bench_giab.out')
-        job.set_error(f'log_{self.id}_snf2_bench_giab.err')
+        job.set_output(f'log_{self.id}_snf2_{bench_log}.out')
+        job.set_error(f'log_{self.id}_snf2_{bench_log}.err')
         job.set_chdir(f'{self.args.dir_out}')
         if not os.path.exists(f'{self.args.dir_out}'):
             os.mkdir(f'{self.args.dir_out}')
-        job.set_jname(f'trvGIAB')
+        job.set_jname(f'trv{bench_name}')
         if self.args.skip_old and self.args.skip_new:
             self.logger.error(f'Both analysis have the "skip" option on... none has run.')
         elif self.args.skip_old:
@@ -117,52 +120,17 @@ class GIABBench(object):
             self.logger.info(f'Using both versions of Sniffles2.')
             job.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
         # truvari command
-        self.logger.info(f'Running GIAB SV-bench v1.')
+        self.logger.info(f'Running GIAB SV-bench {bench_name}.')
         cmd = " ".join([
             f'{self.src_path}/scripts/truvari.sh', 
             f'{self.args.output}_{self.args.snf2_old_ver}.vcf.gz',
             f'{self.args.output}_{self.args.snf2_old_ver}_bench',
             f'{self.args.output}_{self.args.snf2_new_ver}.vcf.gz',
             f'{self.args.output}_{self.args.snf2_new_ver}_bench',
-            self.args.truvari["vcf"],
-            self.args.truvari["bed"],
-            self.args.reference,
-            self.args.truvari["bench"], "1"
+            vcf, bed, self.args.reference, bench, statify
         ])
         job.make(cmd)
         job.submit()
-        if self.args.truvari2 is not None:
-            job2 = jobs_slurm.SubmitJobsSlurm()
-            job2.set_output(f'log_{self.id}_snf2_bench_cmrg2.out')
-            job2.set_error(f'log_{self.id}_snf2_bench_cmrg2.err')
-            job2.set_chdir(f'{self.args.dir_out}')
-            job2.set_jname(f'trvCMRG')
-            if self.args.skip_old and self.args.skip_new:
-                self.logger.error(f'Both analysis have the "skip" option on... none has run.')
-            elif self.args.skip_old:
-                self.logger.info(f'Only using new version of Sniffles2.')
-                job2.set_dependencies(f'afterok:{new.job_id}')
-            elif self.args.skip_new:
-                self.logger.info(f'Only using current version of Sniffles2.')
-                job2.set_dependencies(f'afterok:{old.job_id}')
-            else:
-                self.logger.info(f'Using both versions of Sniffles2.')
-                job2.set_dependencies(f'afterok:{old.job_id},{new.job_id}')
-            # truvari command
-            self.logger.info(f'Running GIAB SV-bench CMRG.')
-            cmd = " ".join([
-                f'{self.src_path}/scripts/truvari.sh',
-                f'{self.args.output}_{self.args.snf2_old_ver}.vcf.gz',
-                f'{self.args.output}_{self.args.snf2_old_ver}_bench',
-                f'{self.args.output}_{self.args.snf2_new_ver}.vcf.gz',
-                f'{self.args.output}_{self.args.snf2_new_ver}_bench',
-                self.args.truvari2["vcf"],
-                self.args.truvari2["bed"],
-                self.args.reference,
-                self.args.truvari2["bench"], "0"
-            ])
-            job2.make(cmd)
-            job2.submit()
 
     def bench(self):
         sniffles_current = None
@@ -172,7 +140,11 @@ class GIABBench(object):
         if not self.args.skip_new:
             sniffles_new = self.sniffles_run("new")
         if sniffles_new is not None or sniffles_new is not None:
-            self.compare(sniffles_current, sniffles_new, "GIAB")
+            self.compare(sniffles_current, sniffles_new, "GIAB Q100", "bench_giab",
+                self.args.truvari["vcf"], self.args.truvari["bed"], self.args.truvari["bench"], "1")
+            if self.args.run_cmrg:
+                self.compare(sniffles_current, sniffles_new, "CMRG", "bench_cmrg",
+                    self.args.truvari2["vcf"], self.args.truvari2["bed"], self.args.truvari2["bench"], "0")
 
 
 class GIABBND(object):
@@ -372,7 +344,6 @@ class SeverusParam(object):
     @staticmethod
     def set_truvari(json_file):
         return json.load(open(json_file, "r"))
-
 
 
 class SeverusBench(object):
