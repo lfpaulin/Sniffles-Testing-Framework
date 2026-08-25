@@ -140,7 +140,7 @@ class GIABBench(object):
         if not self.args.skip_new:
             sniffles_new = self.sniffles_run("new")
         if sniffles_new is not None or sniffles_new is not None:
-            self.compare(sniffles_current, sniffles_new, "GIAB Q100", "bench_giab",
+            self.compare(sniffles_current, sniffles_new, "GIAB_Q100", "bench_giab",
                 self.args.truvari["vcf"], self.args.truvari["bed"], self.args.truvari["bench"], "1")
             if self.args.run_cmrg:
                 self.compare(sniffles_current, sniffles_new, "CMRG", "bench_cmrg",

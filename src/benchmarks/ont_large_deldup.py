@@ -71,10 +71,11 @@ class ONTLargeDelDup(object):
         if not os.path.exists(f'{self.args.dir_out}'):
             os.mkdir(f'{self.args.dir_out}')
         job.set_jname(f'ont_{use_ver}')
+        cnv = bam_path.split("/")[-1]
         cmd = " ".join([
             f'{self.src_path}/scripts/sniffles.sh',  use_bin,
             f'{bam_path}/altered_coverages.cram',
-            f'{self.args.output}_{use_ver}',
+            f'{self.args.output}_{use_ver}_{cnv}',
             self.args.reference, 
             self.args.tandem_rep,
             f'"{self.args.snf2_param_string}"'
